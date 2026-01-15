@@ -11,18 +11,15 @@ const register = asyncWrapper(async (req, res) => {
   if (![name, username, email, password].every((v) => v?.trim())) {
     throw new ApiError("All fields are required", 400);
   }
-
-  const user = User({
+  const user = new User({
     name,
     username,
     email,
     password,
   });
   await user.save();
-
   const code = await sendCode(user.email, user._id);
   if (!code) throw new ApiError("Failed to send email", 401);
-
   res.cookie("token", code, {
     httpOnly: true,
     sameSite: "strict",
