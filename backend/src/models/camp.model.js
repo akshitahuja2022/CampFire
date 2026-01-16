@@ -31,14 +31,15 @@ const campSchema = new mongoose.Schema(
       min: 1,
       default: 1,
     },
-    expiresAt: {
+    burnAt: {
       type: Date,
       required: true,
-      expires: 0,
     },
   },
   { timestamps: true },
 );
+
+campSchema.index({ burnAt: 1 });
 
 const Camp = mongoose.model("Camp", campSchema);
 
