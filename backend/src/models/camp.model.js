@@ -39,7 +39,7 @@ const campSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-campSchema.index({ burnAt: 1 });
+campSchema.index({ burnAt: 1, createdAt: -1 });
 
 const Camp = mongoose.model("Camp", campSchema);
 
