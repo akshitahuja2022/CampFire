@@ -35,6 +35,11 @@ const campSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    status: {
+      type: String,
+      enum: ["active", "expired"],
+      default: "active",
+    },
   },
   { timestamps: true },
 );
