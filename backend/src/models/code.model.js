@@ -17,6 +17,10 @@ const codeSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    email: {
+      type: String,
+      required: true,
+    },
     expiresAt: {
       type: Date,
       required: true,

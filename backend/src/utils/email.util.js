@@ -38,6 +38,7 @@ const sendCode = async (to, user_id) => {
   const newCode = new Code({
     code,
     user_id,
+    email: to,
     expiresAt,
     tokenHash,
   });

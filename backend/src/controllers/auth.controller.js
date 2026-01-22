@@ -1,9 +1,11 @@
 import User from "../models/user.model.js";
+import Code from "../models/code.model.js";
 import ApiError from "../utils/ApiError.util.js";
 import sendResponse from "../utils/sendResponse.util.js";
 import asyncWrapper from "../utils/asyncWrapper.util.js";
 import { genrateToken } from "../utils/token.util.js";
 import { authCode, sendCode } from "../utils/email.util.js";
+import { getHash } from "../utils/emailToken.util.js";
 
 const register = asyncWrapper(async (req, res) => {
   const { name, username, email, password } = req.body;
@@ -58,6 +60,30 @@ const verifyCode = asyncWrapper(async (req, res) => {
   });
 });
 
+const resendCode = asyncWrapper(async (req, res) => {
+  const rawToken = req.cookies?.token;
+  if (!rawToken) throw new ApiError(401, "Authentication token missing");
+
+  const tokenHash = getHash(rawToken);
+
+  const codeRecord = await Code.findOne({ tokenHash }).select("email user_id");
+  if (!codeRecord)
+    throw new ApiError(404, "Verification code not found or expired");
+
+  await codeRecord.deleteOne();
+
+  const newToken = await sendCode(codeRecord.email, codeRecord.user_id);
+  if (!newToken) throw new ApiError(500, "Failed to send verification email");
+
+  res.cookie("token", newToken, {
+    httpOnly: true,
+    sameSite: "strict",
+    maxAge: 10 * 60 * 1000,
+  });
+
+  sendResponse(res, 200, "OTP sent again successfully");
+});
+
 const login = asyncWrapper(async (req, res) => {
   const { username, password } = req.body;
 
@@ -67,10 +93,21 @@ const login = asyncWrapper(async (req, res) => {
 
   const user = await User.findOne({ username }).select("+password");
   if (!user) throw new ApiError("Invalid credentials", 400);
-  if (!user.isVerified) throw new ApiError("Account not verified", 403);
 
   const isValid = await user.verifyPassword(password);
   if (!isValid) throw new ApiError("Invalid credentials", 400);
+
+  if (!user.isVerified) {
+    await Code.deleteOne({ user_id: user._id });
+    const code = await sendCode(user.email, user._id);
+    if (!code) throw new ApiError("Failed to send email", 401);
+    res.cookie("token", code, {
+      httpOnly: true,
+      sameSite: "strict",
+      maxAge: 10 * 60 * 1000,
+    });
+    throw new ApiError("Account not verified", 403);
+  }
 
   const token = genrateToken(user._id);
 
@@ -87,4 +124,4 @@ const login = asyncWrapper(async (req, res) => {
   });
 });
 
-export { register, login, verifyCode };
+export { register, login, verifyCode, resendCode };
