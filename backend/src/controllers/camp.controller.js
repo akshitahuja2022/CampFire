@@ -5,6 +5,7 @@ import Post from "../models/post.model.js";
 import ApiError from "../utils/ApiError.util.js";
 import sendResponse from "../utils/sendResponse.util.js";
 import { normalizeTitle, findDuplicate } from "../utils/duplicateCamp.util.js";
+import addLog from "../utils/log.util.js";
 
 const createCamp = asyncWrapper(async (req, res) => {
   const userId = req.userId;
@@ -31,6 +32,7 @@ const createCamp = asyncWrapper(async (req, res) => {
   await User.findByIdAndUpdate(userId, {
     $push: { camps: camp._id },
   });
+  addLog(camp._id, "User");
 
   return sendResponse(res, 201, "Camp created successfully", camp);
 });
@@ -66,6 +68,8 @@ const joinCamp = asyncWrapper(async (req, res) => {
     createdAt: camp.createdAt,
     posts,
   };
+
+  addLog(camp._id, "User");
 
   sendResponse(res, 201, "You joinned the Camp", data);
 });

@@ -5,6 +5,7 @@ import User from "../models/user.model.js";
 import Message from "../models/message.model.js";
 import ApiError from "../utils/ApiError.util.js";
 import sendResponse from "../utils/sendResponse.util.js";
+import addLog from "../utils/log.util.js";
 
 const createPost = asyncWrapper(async (req, res) => {
   const campId = req.params.campId;
@@ -44,6 +45,8 @@ const createPost = asyncWrapper(async (req, res) => {
   });
 
   await post.save();
+
+  addLog(campId, "Post");
 
   const data = await post.populate("userId", "name username");
   sendResponse(res, 201, "Post created", data);

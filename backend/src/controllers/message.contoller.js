@@ -3,6 +3,7 @@ import Post from "../models/post.model.js";
 import ApiError from "../utils/ApiError.util.js";
 import asyncWrapper from "../utils/asyncWrapper.util.js";
 import sendResponse from "../utils/sendResponse.util.js";
+import addLog from "../utils/log.util.js";
 
 const addMessage = async (userId, campId, postId, text) => {
   const post = await Post.findById(postId).select("deleted campId").lean();
@@ -18,6 +19,8 @@ const addMessage = async (userId, campId, postId, text) => {
   });
   await message.save();
   const data = await message.populate("userId", "name username");
+
+  addLog(post.campId, "Message");
 
   return data;
 };
