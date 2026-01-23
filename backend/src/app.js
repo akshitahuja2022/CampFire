@@ -7,11 +7,13 @@ import authRouter from "./routes/auth.route.js";
 import campRoutes from "./routes/camp.route.js";
 import postRoutes from "./routes/post.route.js";
 import messageRoutes from "./routes/message.route.js";
+import config from "./configs/env.config.js";
 
 const app = express();
 
 app.use(
   cors({
+    origin: `${config.FRONTEND_URL}`,
     credentials: true,
   }),
 );

@@ -1,17 +1,60 @@
-import React, { useState } from "react";
+import { useContext } from "react";
 import { IoEyeOutline } from "react-icons/io5";
 import { IoEyeOffOutline } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/authContext";
+import { handleError, handleSuccess } from "../notify/Notification";
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    username: "",
-    email: "",
-    password: "",
-  });
+  const navigate = useNavigate();
+  const {
+    formData,
+    setFormData,
+    showPassword,
+    setShowPassword,
+    loading,
+    setLoading,
+  } = useContext(AuthContext);
 
-  const [showPassword, setShowPassword] = useState(false);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKNED_URL}/api/v1/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+          credentials: "include",
+        },
+      );
+
+      const data = await response.json();
+      if (response.status === 403 && data.message === "Account not verified") {
+        handleError(
+          "Account not verified. Redirecting to verification page...",
+        );
+        navigate("/verify");
+      } else if (data.success) {
+        handleSuccess(data.message);
+        setTimeout(() => navigate("/"), 2000);
+      } else {
+        handleError(data.message);
+      }
+      setFormData({
+        username: "",
+        password: "",
+      });
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -40,7 +83,7 @@ const Login = () => {
           </div>
 
           {/* Form */}
-          <form className="space-y-3">
+          <form onSubmit={handleSubmit} className="space-y-3">
             {/* Username Input */}
             <div>
               <label
@@ -95,8 +138,9 @@ const Login = () => {
 
             {/* login Button */}
             <button
+              disabled={loading}
               type="submit"
-              className="w-full bg-orange-400 hover:bg-orange-300 text-white font-bold py-3 px-4 rounded-lg shadow-lg mt-6"
+              className={`w-full bg-orange-400 hover:bg-orange-300 text-white font-bold py-3 px-4 rounded-lg shadow-lg mt-6 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               Enter the Camp
             </button>

@@ -16,6 +16,7 @@ const config = {
   jwt_secret: process.env.JWT_SECRET,
   SMTP_USER: process.env.SMTP_USER,
   SMTP_PASS: process.env.SMTP_PASS,
+  FRONTEND_URL: process.env.FRONTEND_URL,
 };
 
 export default config;
