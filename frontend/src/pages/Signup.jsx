@@ -1,17 +1,56 @@
-import React, { useState } from "react";
+import { useContext } from "react";
 import { IoEyeOutline } from "react-icons/io5";
 import { IoEyeOffOutline } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/authContext";
+import { handleError, handleSuccess } from "../notify/Notification";
 
 const Signup = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    username: "",
-    email: "",
-    password: "",
-  });
+  const navigate = useNavigate();
+  const {
+    formData,
+    setFormData,
+    showPassword,
+    setShowPassword,
+    loading,
+    setLoading,
+  } = useContext(AuthContext);
 
-  const [showPassword, setShowPassword] = useState(false);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKNED_URL}/api/v1/auth/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+          credentials: "include",
+        },
+      );
+
+      const data = await response.json();
+      if (data.success) {
+        handleSuccess(data.message);
+        setTimeout(() => navigate("/verify"), 2000);
+      } else {
+        handleError(data.message);
+      }
+      setFormData({
+        name: "",
+        username: "",
+        email: "",
+        password: "",
+      });
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -40,7 +79,7 @@ const Signup = () => {
           </div>
 
           {/* Form */}
-          <form className="space-y-3">
+          <form onSubmit={handleSubmit} className="space-y-3">
             <div>
               <label
                 htmlFor="fullName"
@@ -135,8 +174,9 @@ const Signup = () => {
 
             {/* Button */}
             <button
+              disabled={loading}
               type="submit"
-              className="mt-10 w-full bg-orange-400 hover:bg-orange-300 text-white font-bold py-3 px-4 rounded-lg shadow-lg"
+              className={`mt-10 w-full bg-orange-400 hover:bg-orange-300 text-white font-bold py-3 px-4 rounded-lg shadow-lg ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               Join the Camp
             </button>
