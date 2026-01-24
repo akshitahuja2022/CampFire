@@ -1,48 +1,82 @@
 import Camp from "../models/camp.model.js";
 import Log from "../models/log.model.js";
+import cron from "node-cron";
 
 const scoreTrendingCamp = async () => {
   try {
-    const camps = await Camp.find({
-      createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
-    })
-      .sort({ totalUser: -1 })
-      .limit(150);
+    const scores = await Log.aggregate([
+      {
+        $match: {
+          createdAt: { $gt: new Date(Date.now() - 60 * 60 * 1000) },
+        },
+      },
+      {
+        $group: {
+          _id: "$campId",
+          userCount: {
+            $sum: { $cond: [{ $eq: ["$log", "User"] }, 1, 0] },
+          },
+          postCount: {
+            $sum: { $cond: [{ $eq: ["$log", "Post"] }, 1, 0] },
+          },
+          messageCount: {
+            $sum: { $cond: [{ $eq: ["$log", "Message"] }, 1, 0] },
+          },
+          lastActivityAt: { $max: "$createdAt" },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          campId: "$_id",
+          userCount: 1,
+          postCount: 1,
+          messageCount: 1,
+          lastActivityAt: 1,
+        },
+      },
+    ]);
+    if (scores.length < 1) return scores;
 
-    for (const camp of camps) {
-      let user = 0,
-        post = 0,
-        message = 0;
-
-      const logs = await Log.find({
-        campId: camp._id,
-        createdAt: { $gt: new Date(Date.now() - 60 * 60 * 1000) },
-      });
-
-      for (const log of logs) {
-        if (log.log === "User") {
-          user++;
-        } else if (log.log === "Post") {
-          post++;
-        } else {
-          message++;
-        }
-      }
-
-      const score = post * 3 + user * 2 + message * 1;
-
+    for (const score of scores) {
+      const calclate =
+        score.postCount * 3 + score.userCount * 2 + score.messageCount * 1;
       const minutesAgo =
-        (Date.now() - camp.lastActivityAt.getTime()) / (1000 * 60);
+        (Date.now() - score.lastActivityAt.getTime()) / (1000 * 60);
 
       const decay = Math.pow(minutesAgo + 1, 0.8);
-
-      camp.trendingScore = score / decay;
-
-      await camp.save();
+      score.trendingScore = calclate / decay;
     }
+
+    return scores;
   } catch (error) {
     console.log(error.message);
   }
 };
 
-export { scoreTrendingCamp };
+const updateTrendingScores = async () => {
+  const scores = await scoreTrendingCamp();
+  if (!scores.length) return;
+
+  const bulkOps = scores.map((score) => ({
+    updateOne: {
+      filter: { _id: score.campId },
+      update: {
+        $set: {
+          trendingScore: score.trendingScore,
+        },
+      },
+    },
+  }));
+
+  await Camp.bulkWrite(bulkOps);
+};
+
+const updateTrending = () => {
+  cron.schedule("0 * * * *", () => {
+    console.log("Updating trending camps...");
+    updateTrendingScores();
+  });
+};
+
+export default updateTrending;
