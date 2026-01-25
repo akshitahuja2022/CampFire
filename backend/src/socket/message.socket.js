@@ -15,46 +15,84 @@ const messageHandler = (io) => {
 
     socket.on("message", async ({ campId, postId, text }) => {
       try {
-        if (!postId || !text || !campId)
-          throw new Error("postId, campId and text required");
+        if (!postId || !text || !campId) {
+          return socket.emit("error", {
+            message: "postId, campId and text required",
+          });
+        }
+
         const message = await addMessage(socket.userId, campId, postId, text);
-        if (!message) throw new Error("Failed to send message");
+
+        if (!message) {
+          return socket.emit("error", {
+            message: "Failed to send message",
+          });
+        }
+
         io.to(postId).emit("message", {
-          sender: socket.id,
+          sender: socket.userId,
           text,
           message,
         });
       } catch (error) {
-        throw new Error(error.message);
+        socket.emit("error", {
+          message: "Internal server error",
+        });
       }
     });
 
     socket.on("edit-message", async ({ messageId, text }) => {
       try {
-        if (!messageId || !text) throw new Error("MessageId and text required");
-        const update = await editMessage(userId, messageId, text);
-        if (!update) throw new Error("Failed to update message");
-        io.to(postId).emit("edit-message", {
-          sender: socket.id,
+        if (!messageId || !text) {
+          return socket.emit("error", {
+            message: "messageId and text required",
+          });
+        }
+
+        const update = await editMessage(socket.userId, messageId, text);
+
+        if (!update) {
+          return socket.emit("error", {
+            message: "Failed to update message",
+          });
+        }
+
+        io.to(socket.postId).emit("edit-message", {
+          sender: socket.userId,
           text,
           update,
         });
       } catch (error) {
-        throw new Error(error.message);
+        socket.emit("error", {
+          message: "Internal server error",
+        });
       }
     });
 
     socket.on("delete-message", async ({ messageId }) => {
       try {
-        if (!messageId) throw new Error("MessageId required");
-        const deleted = await deleteMessage(userId, messageId);
-        if (!deleted) throw new Error("Failed to delete message");
-        io.to(postId).emit("delete-message", {
-          sender: socket.id,
+        if (!messageId) {
+          return socket.emit("error", {
+            message: "messageId required",
+          });
+        }
+
+        const deleted = await deleteMessage(socket.userId, messageId);
+
+        if (!deleted) {
+          return socket.emit("error", {
+            message: "Failed to delete message",
+          });
+        }
+
+        io.to(socket.postId).emit("delete-message", {
+          sender: socket.userId,
           messageId,
         });
       } catch (error) {
-        throw new Error(error.message);
+        socket.emit("error", {
+          message: "Internal server error",
+        });
       }
     });
   });
