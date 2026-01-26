@@ -17,13 +17,13 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
           {/* Logo/Site Heading */}
           <div className="flex-shrink-0">
-            <a
-              href="/"
+            <Link
+              to="/"
               className="text-black text-2xl font-bold"
               aria-label="CampFire Home"
             >
               Camp<span className="text-orange-400 font-bold">Fire</span>
-            </a>
+            </Link>
           </div>
 
           {/* Desktop Menu - Buttons on the right */}
