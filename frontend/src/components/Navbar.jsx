@@ -3,7 +3,6 @@ import { IoMenu } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
 
-
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -12,14 +11,14 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="">
+    <nav className="border-b border-[#1f1f23]">
       <div className="px-4 sm:px-6 font-serif m-2">
         <div className="flex justify-between items-center">
           {/* Logo/Site Heading */}
           <div className="flex-shrink-0">
             <Link
               to="/"
-              className="text-black text-2xl font-bold"
+              className="text-white text-2xl font-bold"
               aria-label="CampFire Home"
             >
               Camp<span className="text-orange-400 font-bold">Fire</span>
@@ -30,13 +29,13 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-4">
             <Link
               to="/login"
-              className="px-3 py-2 bg-orange-400 text-white font-bold rounded-lg hover:bg-orange-400 transition-all duration-200"
+              className="px-3 py-2 bg-orange-400 text-black font-bold rounded-lg hover:bg-orange-400 transition-all duration-200"
             >
               Login
             </Link>
             <Link
               to="/signup"
-              className="px-3 py-2 bg-orange-400 text-white font-bold rounded-lg hover:bg-orange-400 transition-all duration-200"
+              className="px-3 py-2 bg-orange-400 text-black font-bold rounded-lg hover:bg-orange-400 transition-all duration-200"
             >
               Signup
             </Link>
