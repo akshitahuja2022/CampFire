@@ -12,6 +12,7 @@ import TopCharts from "./components/TopCharts";
 import YourCamp from "./components/YourCamp";
 import Settings from "./components/Settings";
 import ForgotPassword from "./pages/ForgotPassword";
+import ResetVerifyPassword from "./pages/ResetVerifyPassword";
 const App = () => {
   return (
     <>
@@ -21,6 +22,7 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/verify" element={<VerifyOtp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetVerifyPassword />} />
 
         <Route path="/" element={<Home />}>
           <Route index element={<HomeCamp />} />
