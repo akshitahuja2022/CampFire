@@ -9,6 +9,7 @@ export const AuthContextProvider = ({ children }) => {
     password: "",
   });
 
+  const [isLogin, setIsLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -38,6 +39,8 @@ export const AuthContextProvider = ({ children }) => {
         setTrendingCamps,
         topCamps,
         setTopCamps,
+        isLogin,
+        setIsLogin
       }}
     >
       {children}

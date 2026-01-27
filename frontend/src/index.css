@@ -15,3 +15,12 @@ html {
   overflow-x: hidden;
   scroll-behavior: smooth;
 }
+
+/* Hide scrollbar but still scrollable */
+.scrollbar-hide {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

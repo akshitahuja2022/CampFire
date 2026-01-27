@@ -8,7 +8,7 @@ import { HiMiniArrowTrendingUp } from "react-icons/hi2";
 const Sidebar = () => {
   return (
     <aside
-      className="hidden md:flex md:w-16 lg:w-2/5 xl:max-w-60 h-[calc(100vh-57px)]
+      className="hidden md:flex md:w-16 lg:w-2/5 xl:max-w-60 h-[calc(100vh-49px)]
  flex-col p-2 lg:p-4 border-r border-[#1f1f23] text-white bg-[#111113]"
     >
       {/* Navigation Links */}

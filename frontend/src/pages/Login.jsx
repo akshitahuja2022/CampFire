@@ -14,6 +14,7 @@ const Login = () => {
     setShowPassword,
     loading,
     setLoading,
+    setIsLogin,
   } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
@@ -41,6 +42,7 @@ const Login = () => {
         navigate("/verify");
       } else if (data.success) {
         handleSuccess(data.message);
+        setIsLogin(true);
         setTimeout(() => navigate("/"), 2000);
       } else {
         handleError(data.message);
