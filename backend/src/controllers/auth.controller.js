@@ -40,9 +40,23 @@ const verifyCode = asyncWrapper(async (req, res) => {
   const verify = await authCode(rawToken, code);
   if (!verify) throw new ApiError("Invalid OTP", 401);
 
-  const user = await User.findById(verify);
-  if (!user) throw new ApiError("User not found, register again", 401);
+  if (verify.forWhat === "password") {
+    const user = await User.findById(verify.user_id).select(
+      "isVerified +password",
+    );
+    if (!user) throw new ApiError("User not found, register again", 401);
 
+    const { password } = req.body;
+    if (!password) throw new ApiError("Password not provided", 401);
+
+    user.password = password;
+    await user.save();
+
+    return sendResponse(res, 200, "Password reset successfully");
+  }
+
+  const user = await User.findById(verify.user_id).select("isVerified");
+  if (!user) throw new ApiError("User not found, register again", 401);
   user.isVerified = true;
   await user.save();
 
@@ -134,7 +148,7 @@ const forgotPassword = asyncWrapper(async (req, res) => {
   const user = await User.findOne({ email }).select("email");
   if (!user) throw new ApiError("User not found", 400);
 
-  const newToken = await sendCode(codeRecord.email, codeRecord.user_id);
+  const newToken = await sendCode(user.email, user._id, "password");
   if (!newToken) throw new ApiError(500, "Failed to send verification email");
 
   res.cookie("token", newToken, {

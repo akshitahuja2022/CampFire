@@ -21,6 +21,11 @@ const codeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    forWhat: {
+      type: String,
+      enum: ["password", "verify"],
+      default: "verify",
+    },
     expiresAt: {
       type: Date,
       required: true,

@@ -27,10 +27,15 @@ const authCode = async (rawToken, code) => {
   }
 
   await record.deleteOne();
-  return record.user_id;
+
+  const data = {
+    user_id: record.user_id,
+    forWhat: record.forWhat,
+  };
+  return data;
 };
 
-const sendCode = async (to, user_id) => {
+const sendCode = async (to, user_id, forWhat = "verify") => {
   const code = Math.floor(100000 + Math.random() * 900000);
   const { rawHash, tokenHash } = generateHash();
   const expiresAt = Date.now() + 10 * 60 * 1000;
@@ -39,6 +44,7 @@ const sendCode = async (to, user_id) => {
     code,
     user_id,
     email: to,
+    forWhat,
     expiresAt,
     tokenHash,
   });
