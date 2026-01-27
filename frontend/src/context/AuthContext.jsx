@@ -21,6 +21,8 @@ export const AuthContextProvider = ({ children }) => {
   const [yourCamps, setYourCamps] = useState([]);
   const [trendingCamps, setTrendingCamps] = useState([]);
   const [topCamps, setTopCamps] = useState([]);
+  const [joinCamps, setJoinCamps] = useState([]);
+  const [personalisedCamps, setPpersonalisedCamps] = useState([]);
 
   return (
     <AuthContext.Provider
@@ -40,7 +42,11 @@ export const AuthContextProvider = ({ children }) => {
         topCamps,
         setTopCamps,
         isLogin,
-        setIsLogin
+        setIsLogin,
+        joinCamps,
+        setJoinCamps,
+        personalisedCamps,
+        setPpersonalisedCamps
       }}
     >
       {children}

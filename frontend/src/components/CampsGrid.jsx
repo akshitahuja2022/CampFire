@@ -1,6 +1,38 @@
 import { FaUserGroup } from "react-icons/fa6";
+import { handleError, handleSuccess } from "../notify/Notification";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../context/authContext";
 
 const CampsGrid = ({ camps }) => {
+  const { setJoinCamps } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleJoinCamp = async (id) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/join/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(),
+          credentials: "include",
+        },
+      );
+      const result = await response.json();
+      if (result.success) {
+        handleSuccess(result.message);
+        setJoinCamps(result.data);
+        setTimeout(() => navigate("/your-camps"), 2000);
+      } else {
+        handleError(result.message);
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  };
   return (
     <div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:m-2">
@@ -31,7 +63,10 @@ const CampsGrid = ({ camps }) => {
                 <span>{camp.totalUsers}</span>
               </div>
 
-              <button className="px-4 py-1.5 text-sm rounded-lg bg-orange-500 text-black font-bold hover:bg-orange-400 transition shrink-0">
+              <button
+                onClick={() => handleJoinCamp(camp._id)}
+                className="px-4 py-1.5 text-sm rounded-lg bg-orange-500 text-black font-bold hover:bg-orange-400 transition shrink-0"
+              >
                 Join
               </button>
             </div>
