@@ -124,4 +124,26 @@ const login = asyncWrapper(async (req, res) => {
   });
 });
 
-export { register, login, verifyCode, resendCode };
+const forgotPassword = asyncWrapper(async (req, res) => {
+  const { email } = req.body;
+  if (!email) throw new ApiError("Email required", 400);
+
+  const codeExists = await Code.findOne({ email });
+  if (codeExists) await codeExists.deleteOne();
+
+  const user = await User.findOne({ email }).select("email");
+  if (!user) throw new ApiError("User not found", 400);
+
+  const newToken = await sendCode(codeRecord.email, codeRecord.user_id);
+  if (!newToken) throw new ApiError(500, "Failed to send verification email");
+
+  res.cookie("token", newToken, {
+    httpOnly: true,
+    sameSite: "strict",
+    maxAge: 10 * 60 * 1000,
+  });
+
+  sendResponse(res, 200, "Otp sent");
+});
+
+export { register, login, verifyCode, resendCode, forgotPassword };

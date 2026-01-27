@@ -7,6 +7,7 @@ import authRouter from "./routes/auth.route.js";
 import campRoutes from "./routes/camp.route.js";
 import postRoutes from "./routes/post.route.js";
 import messageRoutes from "./routes/message.route.js";
+import userRoutes from "./routes/user.route.js";
 import config from "./configs/env.config.js";
 
 const app = express();
@@ -24,6 +25,7 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/camp", campRoutes);
 app.use("/api/v1/post", postRoutes);
 app.use("/api/v1/message", messageRoutes);
+app.use("/api/v1/user", userRoutes);
 
 app.use(errorMiddleware);
 
