@@ -31,7 +31,7 @@ const ForgotPassword = () => {
 
       if (result.success) {
         handleSuccess(result.message);
-        setTimeout(() => navigate("/verify"), 2000);
+        setTimeout(() => navigate("/reset-password"), 2000);
       } else {
         handleError(result.message);
       }
