@@ -15,6 +15,7 @@ const Login = () => {
     loading,
     setLoading,
     setIsLogin,
+    setLoginUser,
   } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
@@ -43,6 +44,7 @@ const Login = () => {
       } else if (data.success) {
         handleSuccess(data.message);
         setIsLogin(true);
+        setLoginUser(data.data);
         setTimeout(() => navigate("/"), 2000);
       } else {
         handleError(data.message);

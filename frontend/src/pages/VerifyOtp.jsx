@@ -1,12 +1,12 @@
 import { useContext, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import { handleError, handleSuccess } from "../notify/Notification";
 
 const VerifyOtp = () => {
   const navigate = useNavigate();
 
-  const { formData, setFormData, loading, setLoading, setIsLogin } =
+  const { formData, setFormData, loading, setLoading, setIsLogin, setLoginUser } =
     useContext(AuthContext);
 
   const inputsRef = useRef([]);
@@ -32,6 +32,7 @@ const VerifyOtp = () => {
       if (data.success) {
         handleSuccess(data.message);
         setIsLogin(true);
+        setLoginUser(data.data)
         setTimeout(() => navigate("/"), 1000);
       } else {
         handleError(data.message);
