@@ -7,6 +7,8 @@ export const AuthContextProvider = ({ children }) => {
     username: "",
     email: "",
     password: "",
+    oldPassword: "",
+    newPassword: "",
   });
 
   const [isLogin, setIsLogin] = useState(false);
@@ -23,6 +25,7 @@ export const AuthContextProvider = ({ children }) => {
   const [topCamps, setTopCamps] = useState([]);
   const [joinCamps, setJoinCamps] = useState([]);
   const [personalisedCamps, setPpersonalisedCamps] = useState([]);
+  const [loginUser, setLoginUser] = useState(null);
 
   return (
     <AuthContext.Provider
@@ -46,7 +49,9 @@ export const AuthContextProvider = ({ children }) => {
         joinCamps,
         setJoinCamps,
         personalisedCamps,
-        setPpersonalisedCamps
+        setPpersonalisedCamps,
+        loginUser,
+        setLoginUser,
       }}
     >
       {children}
