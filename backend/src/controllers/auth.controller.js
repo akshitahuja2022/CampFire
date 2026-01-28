@@ -55,7 +55,9 @@ const verifyCode = asyncWrapper(async (req, res) => {
     return sendResponse(res, 200, "Password reset successfully");
   }
 
-  const user = await User.findById(verify.user_id).select("isVerified");
+  const user = await User.findById(verify.user_id).select(
+    "name username email isVerified",
+  );
   if (!user) throw new ApiError("User not found, register again", 401);
   user.isVerified = true;
   await user.save();
