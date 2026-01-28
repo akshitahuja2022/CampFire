@@ -1,7 +1,8 @@
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../context/authContext";
-import Loader from "../components/Loader";
 import { handleError, handleSuccess } from "../notify/Notification";
+import { MdEdit } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 const AccountProfile = () => {
   const {
@@ -21,10 +22,6 @@ const AccountProfile = () => {
       });
     }
   }, [loginUser, setFormData]);
-
-  if (!loginUser) {
-    return <Loader />;
-  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -131,14 +128,31 @@ const AccountProfile = () => {
                 <p className="text-md text-[#a3a3a3]">{loginUser?.email}</p>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className={`px-6 sm:px-8 py-2.5 sm:py-3 bg-orange-400 text-black font-semibold rounded-lg hover:bg-orange-500 text-sm sm:text-base ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-                >
-                  Update Profile
-                </button>
+              <div className="mb-14">
+                <label className="flex gap-3 text-sm sm:text-xl font-semibold text-[#fafafa] mb-5">
+                  Your Interests{" "}
+                  <span className="mt-2">
+                    <Link to="/settings/add-interest">
+                      <MdEdit size={17} />
+                    </Link>
+                  </span>
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {loginUser.interests.map((interest) => {
+                    return (
+                      <button
+                        key={interest}
+                        type="button"
+                        className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-sm sm:text-base font-medium bg-orange-400 text-black border-orange-400"
+                      >
+                        {interest}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row justify-end gap-4">
                 <button
                   type="button"
                   onClick={() =>
@@ -151,20 +165,16 @@ const AccountProfile = () => {
                 >
                   Cancel
                 </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`px-6 sm:px-8 py-2.5 sm:py-3 bg-orange-400 text-black font-semibold rounded-lg hover:bg-orange-500 text-sm sm:text-base ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                >
+                  Update Profile
+                </button>
               </div>
             </div>
           </form>
-
-          <div className="bg-[#111113] px-6 sm:px-8 md:px-10 py-4 border-t border-[#1f1f23]">
-            <p className="text-xs sm:text-sm text-[#a3a3a3]">
-              Last updated:{" "}
-              {new Date().toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </p>
-          </div>
         </div>
       </div>
     </div>

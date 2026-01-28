@@ -3,6 +3,7 @@ import { handleError } from "../notify/Notification";
 import { AuthContext } from "../context/authContext";
 import Loader from "./Loader";
 import { FaUserGroup } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 
 const HomeCamp = () => {
   const { loading, setLoading, personalisedCamps, setPpersonalisedCamps } =
@@ -40,6 +41,16 @@ const HomeCamp = () => {
         <h2 className="text-base sm:text-lg font-semibold text-white">
           No activity yet.
         </h2>
+        <p className="mt-1 text-xs sm:text-sm mb-6">
+          We couldn’t find any camps matching your interests. Update your
+          interests to see personalized content.
+        </p>
+        <Link
+          to="/settings/add-interest"
+          className={`px-4 py-2 sm:py-2 bg-orange-400 text-black font-semibold rounded-lg hover:bg-orange-500 text-sm sm:text-base ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+        >
+          Add interests
+        </Link>
       </div>
     );
   }

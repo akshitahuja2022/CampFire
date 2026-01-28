@@ -16,27 +16,32 @@ import ResetVerifyPassword from "./pages/ResetVerifyPassword";
 import AccountProfile from "./pages/AccountProfile";
 import SecurityPrivacy from "./pages/SecurityPrivacy";
 import AddInterests from "./pages/AddInterests";
+import ProtectedRoute from "./components/ProtectedRoute";
 const App = () => {
   return (
     <>
       <Navbar />
       <Routes>
+        {/* public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/verify" element={<VerifyOtp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetVerifyPassword />} />
 
-        <Route path="/" element={<Home />}>
-          <Route index element={<HomeCamp />} />
-          <Route path="charts" element={<TopCharts />} />
-          <Route path="your-camps" element={<YourCamp />} />
-          <Route path="create" element={<CreateCamp />} />
-          <Route path="settings" element={<Settings />} />
+        {/* protected routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<Home />}>
+            <Route index element={<HomeCamp />} />
+            <Route path="charts" element={<TopCharts />} />
+            <Route path="your-camps" element={<YourCamp />} />
+            <Route path="create" element={<CreateCamp />} />
+            <Route path="settings" element={<Settings />} />
 
-          <Route path="settings/account" element={<AccountProfile />} />
-          <Route path="settings/privacy" element={<SecurityPrivacy />} />
-          <Route path="settings/add-interest" element={<AddInterests />} />
+            <Route path="settings/account" element={<AccountProfile />} />
+            <Route path="settings/privacy" element={<SecurityPrivacy />} />
+            <Route path="settings/add-interest" element={<AddInterests />} />
+          </Route>
         </Route>
       </Routes>
 

@@ -6,7 +6,7 @@ import { handleError, handleSuccess } from "../notify/Notification";
 import { useNavigate } from "react-router-dom";
 
 const SecurityPrivacy = () => {
-  const naivgate = useNavigate();
+  const navigate = useNavigate();
   const {
     formData,
     setFormData,
@@ -53,7 +53,7 @@ const SecurityPrivacy = () => {
           oldPassword: "",
           newPassword: "",
         });
-        setTimeout(() => naivgate("/settings/account"), 2000);
+        setTimeout(() => navigate("/settings/account"), 2000);
       } else {
         handleError(result.message);
       }
@@ -153,19 +153,26 @@ const SecurityPrivacy = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col justify-end sm:flex-row gap-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFormData({
+                      oldPassword: "",
+                      newPassword: "",
+                    });
+                    navigate("/settings");
+                  }}
+                  className="px-6 sm:px-8 py-2.5 sm:py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 text-sm sm:text-base"
+                >
+                  Cancel
+                </button>
                 <button
                   type="submit"
                   disabled={loading}
                   className={`px-6 sm:px-8 py-2.5 sm:py-3 bg-orange-400 text-black font-semibold rounded-lg hover:bg-orange-500 text-sm sm:text-base ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   Change Password
-                </button>
-                <button
-                  type="button"
-                  className="px-6 sm:px-8 py-2.5 sm:py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 text-sm sm:text-base"
-                >
-                  Cancel
                 </button>
               </div>
             </div>
