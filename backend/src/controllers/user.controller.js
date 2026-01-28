@@ -97,4 +97,11 @@ const updateAvatar = asyncWrapper(async (req, res) => {
   sendResponse(res, 200, "Avatar updated");
 });
 
-export { changePassword, changeMetaData, addInterests, updateAvatar };
+const getUser = asyncWrapper(async (req, res) => {
+  const user = await User.findById(req.userId);
+  if (!user) throw new ApiError("User not found", 400);
+
+  sendResponse(res, 200, "User data", user);
+});
+
+export { changePassword, changeMetaData, addInterests, updateAvatar, getUser };
