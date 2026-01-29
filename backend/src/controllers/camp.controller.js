@@ -104,6 +104,10 @@ const leaveCamp = asyncWrapper(async (req, res) => {
   user.camps.pull(campId);
   await user.save();
 
+  const camp = await Camp.findById(campId).select("totalUsers");
+  camp.totalUsers -= 1;
+  await camp.save();
+
   sendResponse(res, 200, "Successfully left the camp", { campId });
 });
 

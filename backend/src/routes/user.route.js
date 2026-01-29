@@ -4,6 +4,7 @@ import {
   addInterests,
   updateAvatar,
   getUser,
+  removeAvatar,
 } from "../controllers/user.controller.js";
 import { validateUser } from "../middlewares/validateUser.middleware.js";
 import express from "express";
@@ -20,6 +21,7 @@ router.post(
   upload.single("avatar"),
   updateAvatar,
 );
+router.delete("/update/avatar", validateUser, removeAvatar);
 router.get("/me", validateUser, getUser);
 
 export default router;
