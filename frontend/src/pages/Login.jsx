@@ -14,7 +14,6 @@ const Login = () => {
     setShowPassword,
     loading,
     setLoading,
-    setIsLogin,
     setLoginUser,
   } = useContext(AuthContext);
 
@@ -43,7 +42,7 @@ const Login = () => {
         navigate("/verify");
       } else if (data.success) {
         handleSuccess(data.message);
-        setIsLogin(true);
+        localStorage.setItem("user", JSON.stringify(data.data));
         setLoginUser(data.data);
         setTimeout(() => navigate("/"), 2000);
       } else {

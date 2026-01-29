@@ -11,7 +11,6 @@ export const AuthContextProvider = ({ children }) => {
     newPassword: "",
   });
 
-  const [isLogin, setIsLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -25,8 +24,13 @@ export const AuthContextProvider = ({ children }) => {
   const [topCamps, setTopCamps] = useState([]);
   const [joinCamps, setJoinCamps] = useState([]);
   const [personalisedCamps, setPpersonalisedCamps] = useState([]);
-  const [loginUser, setLoginUser] = useState(null);
+  const [loginUser, setLoginUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
   const [selectedInterests, setSelectedInterests] = useState([]);
+
+  const isLogin = !!loginUser;
 
   return (
     <AuthContext.Provider
@@ -45,14 +49,13 @@ export const AuthContextProvider = ({ children }) => {
         setTrendingCamps,
         topCamps,
         setTopCamps,
-        isLogin,
-        setIsLogin,
         joinCamps,
         setJoinCamps,
         personalisedCamps,
         setPpersonalisedCamps,
         loginUser,
         setLoginUser,
+        isLogin,
         selectedInterests,
         setSelectedInterests,
       }}

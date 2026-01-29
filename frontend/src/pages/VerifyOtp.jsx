@@ -6,8 +6,14 @@ import { handleError, handleSuccess } from "../notify/Notification";
 const VerifyOtp = () => {
   const navigate = useNavigate();
 
-  const { formData, setFormData, loading, setLoading, setIsLogin, setLoginUser } =
-    useContext(AuthContext);
+  const {
+    formData,
+    setFormData,
+    loading,
+    setLoading,
+    // setIsLogin,
+    setLoginUser,
+  } = useContext(AuthContext);
 
   const inputsRef = useRef([]);
 
@@ -31,8 +37,8 @@ const VerifyOtp = () => {
       const data = await response.json();
       if (data.success) {
         handleSuccess(data.message);
-        setIsLogin(true);
-        setLoginUser(data.data)
+        localStorage.setItem("user", JSON.stringify(data.data));
+        setLoginUser(data.data);
         setTimeout(() => navigate("/"), 1000);
       } else {
         handleError(data.message);
