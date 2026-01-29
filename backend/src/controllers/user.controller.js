@@ -94,7 +94,11 @@ const updateAvatar = asyncWrapper(async (req, res) => {
   user.avatar = avatar;
   user.save();
 
-  sendResponse(res, 200, "Avatar updated");
+  const data = {
+    url: user.avatar.url,
+  };
+
+  sendResponse(res, 200, "Avatar updated", data);
 });
 
 const getUser = asyncWrapper(async (req, res) => {
