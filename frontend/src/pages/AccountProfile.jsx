@@ -77,11 +77,30 @@ const AccountProfile = () => {
   return (
     <div className="py-6 sm:py-8 md:py-4 px-2 sm:px-4">
       <div className="max-w-2xl mx-auto">
-        <div className="mb-8">
-          <h2 className="text-2xl sm:text-3xl font-bold">Account & Profile</h2>
-          <p className="text-sm sm:text-base text-[#a3a3a3] mt-2">
-            Manage your personal information and account settings
-          </p>
+        <div className="flex flex-col sm:flex-row gap-5 mb-4">
+          <div className="relative w-32 h-32 sm:w-20 sm:h-20 mx-auto sm:mx-0">
+            <img
+              src={
+                loginUser.avatar.url ? loginUser.avatar.url : "/user-avatar.png"
+              }
+              alt="user-profile"
+              className="w-full h-full object-cover rounded-full border-4 border-[#1f1f23] shadow-lg"
+            />
+            <Link
+              to="/settings/upload-avatar"
+              className="absolute bottom-0 right-0 bg-white hover:bg-orange-400 p-2 rounded-full shadow-md transition"
+            >
+              <MdEdit className="text-black w-5 h-5 sm:w-3 sm:h-3" />
+            </Link>
+          </div>
+          <div className="mt-1">
+            <h2 className="text-2xl sm:text-3xl font-bold">
+              Account & Profile
+            </h2>
+            <p className="text-sm sm:text-base text-[#a3a3a3] mt-2">
+              Manage your personal information and account settings
+            </p>
+          </div>
         </div>
 
         <div className="bg-[#111113] rounded-lg overflow-hidden border border-[#1f1f23]">
