@@ -17,6 +17,7 @@ import AccountProfile from "./pages/AccountProfile";
 import SecurityPrivacy from "./pages/SecurityPrivacy";
 import AddInterests from "./pages/AddInterests";
 import ProtectedRoute from "./components/ProtectedRoute";
+import UploadAvatar from "./pages/UploadAvatar";
 const App = () => {
   return (
     <>
@@ -41,6 +42,7 @@ const App = () => {
             <Route path="settings/account" element={<AccountProfile />} />
             <Route path="settings/privacy" element={<SecurityPrivacy />} />
             <Route path="settings/add-interest" element={<AddInterests />} />
+            <Route path="settings/upload-avatar" element={<UploadAvatar />} />
           </Route>
         </Route>
       </Routes>
