@@ -2,10 +2,10 @@ import { FaUserGroup } from "react-icons/fa6";
 import { handleError, handleSuccess } from "../notify/Notification";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { AuthContext } from "../context/authContext";
+import { CampContext } from "../context/authContext";
 
 const CampsGrid = ({ camps }) => {
-  const { setJoinCamps } = useContext(AuthContext);
+  const { setJoinCamps } = useContext(CampContext);
   const navigate = useNavigate();
 
   const handleJoinCamp = async (id) => {
@@ -33,13 +33,16 @@ const CampsGrid = ({ camps }) => {
       handleError(error);
     }
   };
+
   return (
     <div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:m-2">
         {camps.map((camp) => (
           <div
             key={camp._id}
-            onClick={() => navigate("/camp-feed")}
+            onClick={() => {
+              navigate(`/camp-feed/${camp._id}`);
+            }}
             className="bg-[#111113] border border-[#1f1f23] rounded-2xl p-4 hover:border-orange-500 cursor-pointer"
           >
             <div className="flex flex-wrap gap-2 mb-5">
@@ -65,8 +68,11 @@ const CampsGrid = ({ camps }) => {
               </div>
 
               <button
-                onClick={() => handleJoinCamp(camp._id)}
-                className="px-4 py-1.5 text-sm rounded-lg bg-orange-500 text-black font-bold hover:bg-orange-400 transition shrink-0"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleJoinCamp(camp._id);
+                }}
+                className="px-4 py-1.5 text-sm rounded-lg bg-orange-400 text-black font-bold hover:bg-orange-500 transition shrink-0"
               >
                 Join
               </button>

@@ -1,14 +1,14 @@
 import React, { useContext, useEffect } from "react";
 import { handleError } from "../notify/Notification";
-import { AuthContext } from "../context/authContext";
+import { AuthContext, CampContext } from "../context/authContext";
 import Loader from "./Loader";
 import { FaUserGroup } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 
 const HomeCamp = () => {
   const navigate = useNavigate();
-  const { loading, setLoading, personalisedCamps, setPpersonalisedCamps } =
-    useContext(AuthContext);
+  const { loading, setLoading } = useContext(AuthContext);
+  const { personalisedCamps, setPpersonalisedCamps } = useContext(CampContext);
   useEffect(() => {
     const personalisedCamps = async () => {
       try {
@@ -61,7 +61,9 @@ const HomeCamp = () => {
       {personalisedCamps.map((camp) => (
         <div
           key={camp._id}
-          onClick={() => navigate("/camp-feed")}
+          onClick={() => {
+            navigate(`/camp-feed/${camp._id}`);
+          }}
           className="flex mx-auto justify-between gap-4
                  bg-gradient-to-b from-[#0f0f11] to-[#0b0b0d]
                  border border-[#1f1f23] rounded-2xl p-5
@@ -95,7 +97,7 @@ const HomeCamp = () => {
                 <span>{camp.totalUsers}</span>
               </div>
 
-              <button className="px-4 py-1.5 text-sm rounded-lg bg-orange-500 text-black font-bold hover:bg-orange-400 transition shrink-0">
+              <button className="px-4 py-1.5 text-sm rounded-lg bg-orange-400 text-black font-bold hover:bg-orange-500 transition shrink-0">
                 Join
               </button>
             </div>

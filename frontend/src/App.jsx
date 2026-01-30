@@ -18,6 +18,7 @@ import SecurityPrivacy from "./pages/SecurityPrivacy";
 import AddInterests from "./pages/AddInterests";
 import ProtectedRoute from "./components/ProtectedRoute";
 import UploadAvatar from "./pages/UploadAvatar";
+import CampFeed from "./pages/CampFeed";
 const App = () => {
   return (
     <>
@@ -38,6 +39,8 @@ const App = () => {
             <Route path="your-camps" element={<YourCamp />} />
             <Route path="create" element={<CreateCamp />} />
             <Route path="settings" element={<Settings />} />
+
+            <Route path="camp-feed/:id" element={<CampFeed />} />
 
             <Route path="settings/account" element={<AccountProfile />} />
             <Route path="settings/privacy" element={<SecurityPrivacy />} />

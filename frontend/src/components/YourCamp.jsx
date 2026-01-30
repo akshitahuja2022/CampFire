@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { AuthContext } from "../context/authContext";
+import { AuthContext, CampContext } from "../context/authContext";
 import { FaUserGroup } from "react-icons/fa6";
 import { handleError } from "../notify/Notification";
 import { FaRegClock } from "react-icons/fa";
@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom";
 
 const YourCamp = () => {
   const navigate = useNavigate();
-  const { loading, setLoading, yourCamps, setYourCamps } =
-    useContext(AuthContext);
+  const { loading, setLoading } = useContext(AuthContext);
+  const { yourCamps, setYourCamps } = useContext(CampContext);
 
   useEffect(() => {
     const fetchCamps = async () => {
@@ -76,7 +76,9 @@ const YourCamp = () => {
       {yourCamps.map((camp) => (
         <div
           key={camp._id}
-          onClick={() => navigate("/camp-feed")}
+          onClick={() => {
+            navigate(`/camp-feed/${camp._id}`);
+          }}
           className="bg-[#111113] border border-[#1f1f23] rounded-2xl p-4 hover:border-orange-500 cursor-pointer"
         >
           <div className="flex flex-wrap gap-2 mb-5">

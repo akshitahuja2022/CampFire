@@ -4,12 +4,15 @@ import "./index.css";
 import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
 import { AuthContextProvider } from "./context/AuthContext.jsx";
+import { CampContextProvider } from "./context/CampContext.jsx";
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-  <AuthContextProvider>
-    <StrictMode>
-      <App />
-    </StrictMode>
-  </AuthContextProvider>
+    <AuthContextProvider>
+      <CampContextProvider>
+        <StrictMode>
+          <App />
+        </StrictMode>
+      </CampContextProvider>
+    </AuthContextProvider>
   </BrowserRouter>,
 );
