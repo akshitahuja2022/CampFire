@@ -102,7 +102,7 @@ const updateAvatar = asyncWrapper(async (req, res) => {
 });
 
 const removeAvatar = asyncWrapper(async (req, res) => {
-  const user = await User.findById(req.user).select("avatar");
+  const user = await User.findById(req.userId).select("avatar");
   if (!user) throw new ApiError("User not found", 404);
 
   const deleted = await deleteImage(user.avatar.id);
@@ -111,7 +111,11 @@ const removeAvatar = asyncWrapper(async (req, res) => {
   user.avatar = { id: null, url: null };
   await user.save();
 
-  sendResponse(res, 200, "Avatar removed successfully");
+  const data = {
+    url: user.avatar.url,
+  };
+
+  sendResponse(res, 200, "Avatar removed successfully", data);
 });
 
 const getUser = asyncWrapper(async (req, res) => {
