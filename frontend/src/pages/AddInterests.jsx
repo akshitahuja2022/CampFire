@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { AuthContext } from "../context/authContext";
 import { IoEyeOutline } from "react-icons/io5";
 import { IoEyeOffOutline } from "react-icons/io5";
@@ -26,7 +26,14 @@ const AddInterests = () => {
     selectedInterests,
     setSelectedInterests,
     setLoginUser,
+    loginUser,
   } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (loginUser?.interests?.length) {
+      setSelectedInterests(loginUser.interests);
+    }
+  }, [loginUser, setSelectedInterests]);
 
   const toggleInterest = (interest) => {
     setSelectedInterests((prev) =>
