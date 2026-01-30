@@ -4,8 +4,10 @@ import { FaUserGroup } from "react-icons/fa6";
 import { handleError } from "../notify/Notification";
 import { FaRegClock } from "react-icons/fa";
 import Loader from "./Loader";
+import { useNavigate } from "react-router-dom";
 
 const YourCamp = () => {
+  const navigate = useNavigate();
   const { loading, setLoading, yourCamps, setYourCamps } =
     useContext(AuthContext);
 
@@ -74,7 +76,8 @@ const YourCamp = () => {
       {yourCamps.map((camp) => (
         <div
           key={camp._id}
-          className="bg-[#111113] border border-[#1f1f23] rounded-2xl p-4 hover:border-orange-500"
+          onClick={() => navigate("/camp-feed")}
+          className="bg-[#111113] border border-[#1f1f23] rounded-2xl p-4 hover:border-orange-500 cursor-pointer"
         >
           <div className="flex flex-wrap gap-2 mb-5">
             {camp.category.map((cat, i) => (

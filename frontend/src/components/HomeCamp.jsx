@@ -3,9 +3,10 @@ import { handleError } from "../notify/Notification";
 import { AuthContext } from "../context/authContext";
 import Loader from "./Loader";
 import { FaUserGroup } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const HomeCamp = () => {
+  const navigate = useNavigate();
   const { loading, setLoading, personalisedCamps, setPpersonalisedCamps } =
     useContext(AuthContext);
   useEffect(() => {
@@ -60,10 +61,11 @@ const HomeCamp = () => {
       {personalisedCamps.map((camp) => (
         <div
           key={camp._id}
+          onClick={() => navigate("/camp-feed")}
           className="flex mx-auto justify-between gap-4
                  bg-gradient-to-b from-[#0f0f11] to-[#0b0b0d]
                  border border-[#1f1f23] rounded-2xl p-5
-                 hover:border-orange-500 transition"
+                 hover:border-orange-500 transition cursor-pointer"
         >
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap gap-2 mb-3">

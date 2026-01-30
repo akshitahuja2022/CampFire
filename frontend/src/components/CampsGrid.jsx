@@ -39,7 +39,8 @@ const CampsGrid = ({ camps }) => {
         {camps.map((camp) => (
           <div
             key={camp._id}
-            className="bg-[#111113] border border-[#1f1f23] rounded-2xl p-4 hover:border-orange-500"
+            onClick={() => navigate("/camp-feed")}
+            className="bg-[#111113] border border-[#1f1f23] rounded-2xl p-4 hover:border-orange-500 cursor-pointer"
           >
             <div className="flex flex-wrap gap-2 mb-5">
               {camp.category.map((cat, i) => (
