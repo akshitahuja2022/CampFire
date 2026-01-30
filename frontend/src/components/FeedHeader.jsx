@@ -7,7 +7,6 @@ import { FaUserGroup } from "react-icons/fa6";
 const FeedHeader = () => {
   const { id } = useParams();
 
-  const [joined, setJoined] = useState(false);
   const { setLoading } = useContext(AuthContext);
   const { camp, setCamp } = useContext(CampContext);
 
@@ -34,10 +33,6 @@ const FeedHeader = () => {
     fetchGetCamps();
   }, [id, setLoading, setCamp]);
 
-  const handleJoin = () => {
-    setJoined(!joined);
-  };
-
   return (
     <header className="sticky top-0 z-20 bg-[#111113] border border-[#1f1f23] m-2 px-4 py-4 md:px-6 rounded-lg">
       <div className="max-w-3xl mx-auto flex flex-row sm:flex-row items-start md:items-center justify-between gap-2 md:gap-4">
@@ -58,11 +53,10 @@ const FeedHeader = () => {
 
         <div className="flex-shrink-0 mt-2 md:mt-0">
           <button
-            onClick={handleJoin}
-            className={`px-4 py-1.5 text-sm rounded-lg font-semibold transition text-black 
-                        ${joined ? "bg-orange-500 border-[#1f1f23]" : "bg-orange-400 text-black hover:bg-orange-500"}`}
+            className={`px-4 py-1.5 text-sm rounded-lg font-semibold transition bg-orange-400 text-black hover:bg-orange-500
+            `}
           >
-            {joined ? "Joined" : "Join"}
+            Join
           </button>
         </div>
       </div>
