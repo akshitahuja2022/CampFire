@@ -14,16 +14,6 @@ export const AuthContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const [campForm, setCampForm] = useState({
-    title: "",
-    description: "",
-    category: "",
-  });
-  const [yourCamps, setYourCamps] = useState([]);
-  const [trendingCamps, setTrendingCamps] = useState([]);
-  const [topCamps, setTopCamps] = useState([]);
-  const [joinCamps, setJoinCamps] = useState([]);
-  const [personalisedCamps, setPpersonalisedCamps] = useState([]);
   const [loginUser, setLoginUser] = useState(() => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
@@ -67,18 +57,6 @@ export const AuthContextProvider = ({ children }) => {
         setLoading,
         showPassword,
         setShowPassword,
-        campForm,
-        setCampForm,
-        yourCamps,
-        setYourCamps,
-        trendingCamps,
-        setTrendingCamps,
-        topCamps,
-        setTopCamps,
-        joinCamps,
-        setJoinCamps,
-        personalisedCamps,
-        setPpersonalisedCamps,
         loginUser,
         setLoginUser,
         isLogin,
