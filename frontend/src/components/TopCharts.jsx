@@ -1,17 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../context/authContext";
+import { AuthContext, CampContext } from "../context/authContext";
 import { handleError } from "../notify/Notification";
 import CampsGrid from "./CampsGrid";
 import Loader from "./Loader";
 const TopCharts = () => {
-  const {
-    trendingCamps,
-    setTrendingCamps,
-    setLoading,
-    topCamps,
-    setTopCamps,
-    loading,
-  } = useContext(AuthContext);
+  const { setLoading, loading } = useContext(AuthContext);
+  const { trendingCamps, setTrendingCamps, topCamps, setTopCamps } =
+    useContext(CampContext);
 
   const [activeTab, setActiveTab] = useState("trending");
 

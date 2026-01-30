@@ -1,14 +1,14 @@
 import React, { useContext, useEffect } from "react";
 import { handleError } from "../notify/Notification";
-import { AuthContext } from "../context/authContext";
+import { AuthContext, CampContext } from "../context/authContext";
 import Loader from "./Loader";
 import { FaUserGroup } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 
 const HomeCamp = () => {
   const navigate = useNavigate();
-  const { loading, setLoading, personalisedCamps, setPpersonalisedCamps } =
-    useContext(AuthContext);
+  const { loading, setLoading } = useContext(AuthContext);
+  const { personalisedCamps, setPpersonalisedCamps } = useContext(CampContext);
   useEffect(() => {
     const personalisedCamps = async () => {
       try {

@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { AuthContext } from "../context/authContext";
+import { AuthContext, CampContext } from "../context/authContext";
 import { FaUserGroup } from "react-icons/fa6";
 import { handleError } from "../notify/Notification";
 import { FaRegClock } from "react-icons/fa";
@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom";
 
 const YourCamp = () => {
   const navigate = useNavigate();
-  const { loading, setLoading, yourCamps, setYourCamps } =
-    useContext(AuthContext);
+  const { loading, setLoading } = useContext(AuthContext);
+  const { yourCamps, setYourCamps } = useContext(CampContext);
 
   useEffect(() => {
     const fetchCamps = async () => {

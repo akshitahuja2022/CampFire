@@ -2,10 +2,10 @@ import { FaUserGroup } from "react-icons/fa6";
 import { handleError, handleSuccess } from "../notify/Notification";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { AuthContext } from "../context/authContext";
+import { AuthContext, CampContext } from "../context/authContext";
 
 const CampsGrid = ({ camps }) => {
-  const { setJoinCamps } = useContext(AuthContext);
+  const { setJoinCamps } = useContext(CampContext);
   const navigate = useNavigate();
 
   const handleJoinCamp = async (id) => {

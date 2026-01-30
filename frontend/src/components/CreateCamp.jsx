@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { AuthContext } from "../context/authContext";
+import { AuthContext, CampContext } from "../context/authContext";
 import { handleError, handleSuccess } from "../notify/Notification";
 import { useNavigate } from "react-router-dom";
 
@@ -18,8 +18,8 @@ const CreateCamp = () => {
     "Startup",
   ];
 
-  const { campForm, setCampForm, loading, setLoading } =
-    useContext(AuthContext);
+  const { loading, setLoading } = useContext(AuthContext);
+  const { campForm, setCampForm } = useContext(CampContext);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
