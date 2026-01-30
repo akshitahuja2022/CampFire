@@ -14,6 +14,8 @@ export const CampContextProvider = ({ children }) => {
   const [joinCamps, setJoinCamps] = useState([]);
   const [personalisedCamps, setPpersonalisedCamps] = useState([]);
 
+  const [camp, setCamp] = useState(null);
+
   return (
     <CampContext.Provider
       value={{
@@ -29,6 +31,8 @@ export const CampContextProvider = ({ children }) => {
         setJoinCamps,
         personalisedCamps,
         setPpersonalisedCamps,
+        camp,
+        setCamp,
       }}
     >
       {children}
