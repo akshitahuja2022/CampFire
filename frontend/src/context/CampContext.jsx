@@ -5,7 +5,7 @@ export const CampContextProvider = ({ children }) => {
   const [campForm, setCampForm] = useState({
     title: "",
     description: "",
-    category: "",
+    category: [],
   });
 
   const [yourCamps, setYourCamps] = useState([]);
