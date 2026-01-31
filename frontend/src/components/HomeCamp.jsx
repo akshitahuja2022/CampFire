@@ -64,7 +64,7 @@ const HomeCamp = () => {
           onClick={() => {
             navigate(`/camp-feed/${camp._id}`);
           }}
-          className="flex mx-auto justify-between gap-4
+          className="flex w-full md:max-w-xl lg:max-w-2xl mx-auto justify-between gap-4
                  bg-gradient-to-b from-[#0f0f11] to-[#0b0b0d]
                  border border-[#1f1f23] rounded-2xl p-5
                  hover:border-orange-500 transition cursor-pointer"
