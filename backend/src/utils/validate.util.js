@@ -52,7 +52,12 @@ export const campSchema = z.object({
     .min(10, "Description must be at least 10 characters")
     .max(500, "Description must be at most 500 characters"),
   category: z
-    .array(z.enum(allowedCategories))
+    .array(
+      z
+        .string()
+        .transform((val) => val.toLowerCase())
+        .pipe(z.enum(allowedCategories)),
+    )
     .min(1, "Select at least one category")
     .max(3, "You can select up to 3 categories"),
 });
@@ -72,7 +77,12 @@ export const passwordChangeSchema = z.object({
 });
 
 export const userInterestsSchema = z.object({
-  interests: z.array(z.enum(allowedCategories)),
+  interests: z.array(
+    z
+      .string()
+      .transform((val) => val.toLowerCase())
+      .pipe(z.enum(allowedCategories)),
+  ),
 });
 
 export const postSchema = z.object({
