@@ -110,7 +110,7 @@ const updateTrending = async () => {
     console.log("Initial update failed:", error.message);
   }
 
-  cron.schedule("*/5 * * * *", async () => {
+  cron.schedule("0 * * * *", async () => {
     try {
       await updateTrendingScores();
       await changeCacheVersion("trendingCamps");

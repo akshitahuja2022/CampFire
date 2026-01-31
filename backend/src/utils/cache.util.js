@@ -1,7 +1,7 @@
 import { getRedisClient } from "../configs/redis.config.js";
 
 const CACHE_TTL = {
-  trendingCamps: 10 * 60,
+  trendingCamps: 30 * 60,
   topCamps: 6 * 60 * 60,
 };
 
@@ -31,7 +31,7 @@ const setCache = async (field, camps, cursor, keyId) => {
     const version = (await redisClient.get(`${field}:version`)) ?? 1;
     const cacheKey = `${field}:v${version}:keyId=${keyId ?? "none"}`;
 
-    const ttl = CACHE_TTL[field] ?? 10 * 60;
+    const ttl = CACHE_TTL[field] ?? 30 * 60;
 
     await redisClient.set(cacheKey, JSON.stringify({ camps, cursor }), {
       EX: ttl,
@@ -45,7 +45,7 @@ const changeCacheVersion = async (field) => {
   try {
     const redisClient = getRedisClient();
     if (!redisClient) return;
-    await redis.incr(`${field}:version`);
+    await redisClient.incr(`${field}:version`);
   } catch (error) {
     console.log(error.message);
   }

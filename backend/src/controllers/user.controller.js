@@ -106,7 +106,7 @@ const removeAvatar = asyncWrapper(async (req, res) => {
   if (!user) throw new ApiError("User not found", 404);
 
   const deleted = await deleteImage(user.avatar.id);
-  if (!deleted) ApiError("Failed to remover avatar", 401);
+  if (!deleted) throw new ApiError("Failed to remover avatar", 401);
 
   user.avatar = { id: null, url: null };
   await user.save();
