@@ -8,7 +8,7 @@ const FeedHeader = () => {
   const { id } = useParams();
 
   const { setLoading } = useContext(AuthContext);
-  const { camp, setCamp } = useContext(CampContext);
+  const { camp, setCamp, setPosts } = useContext(CampContext);
 
   useEffect(() => {
     const fetchGetCamps = async () => {
@@ -23,6 +23,7 @@ const FeedHeader = () => {
         );
         const result = await response.json();
         setCamp(result.data.camp);
+        setPosts(result.data.posts);
       } catch (error) {
         handleError(error);
       } finally {
@@ -31,7 +32,7 @@ const FeedHeader = () => {
     };
 
     fetchGetCamps();
-  }, [id, setLoading, setCamp]);
+  }, [id, setLoading, setCamp, setPosts]);
 
   return (
     <header className="sticky top-0 z-20 bg-[#111113] border border-[#1f1f23] m-2 px-4 py-4 md:px-6 rounded-lg">
