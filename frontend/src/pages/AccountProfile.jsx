@@ -81,7 +81,7 @@ const AccountProfile = () => {
           <div className="relative w-32 h-32 sm:w-20 sm:h-20 mx-auto sm:mx-0">
             <img
               src={
-                loginUser.avatar.url ? loginUser.avatar.url : "/user-avatar.png"
+                loginUser.avatar.url ? loginUser.avatar?.url : "/user-avatar.png"
               }
               alt="user-profile"
               className="w-full h-full object-cover rounded-full border-4 border-[#1f1f23] shadow-lg"
