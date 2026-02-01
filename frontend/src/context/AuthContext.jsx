@@ -15,8 +15,14 @@ export const AuthContextProvider = ({ children }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const [loginUser, setLoginUser] = useState(() => {
-    const storedUser = localStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : null;
+    try {
+      const storedUser = localStorage.getItem("user");
+      return storedUser ? JSON.parse(storedUser) : null;
+    } catch (err) {
+      console.error("Invalid user in localStorage", err);
+      localStorage.removeItem("user");
+      return null;
+    }
   });
   const [selectedInterests, setSelectedInterests] = useState([]);
 
@@ -38,7 +44,11 @@ export const AuthContextProvider = ({ children }) => {
 
         const result = await response.json();
         setLoginUser(result.data);
-        localStorage.setItem("user", JSON.stringify(result.data));
+        if (result?.data) {
+          localStorage.setItem("user", JSON.stringify(result.data));
+        } else {
+          localStorage.removeItem("user");
+        }
       } catch {
         setLoginUser(null);
         localStorage.removeItem("user");
