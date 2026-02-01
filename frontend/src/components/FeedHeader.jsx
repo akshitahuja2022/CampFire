@@ -11,6 +11,9 @@ const FeedHeader = () => {
   const { camp, setCamp, setPosts } = useContext(CampContext);
 
   useEffect(() => {
+    setCamp(null);
+    setPosts([]);
+
     const fetchGetCamps = async () => {
       try {
         setLoading(true);
@@ -39,7 +42,7 @@ const FeedHeader = () => {
       <div className="max-w-3xl mx-auto flex flex-row sm:flex-row items-start md:items-center justify-between gap-2 md:gap-4">
         <div className="min-w-0">
           <h1 className="text-white text-lg sm:text-2xl font-semibold mb-2">
-            {camp?.title || "Loading..."}
+            {camp?.title}
           </h1>
           <p className="text-gray-400 text-sm mt-1 line-clamp-2 mb-2">
             {camp?.description}
