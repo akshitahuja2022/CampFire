@@ -8,6 +8,7 @@ import { normalizeTitle, findDuplicate } from "../utils/duplicateCamp.util.js";
 import addLog from "../utils/log.util.js";
 import { uploadImage } from "../services/cloudinary.service.js";
 import { setCache, getCache } from "../utils/cache.util.js";
+import { adjustUserCount } from "../utils/cache.util.js";
 
 const createCamp = asyncWrapper(async (req, res) => {
   const userId = req.userId;
@@ -47,6 +48,7 @@ const createCamp = asyncWrapper(async (req, res) => {
     $push: { camps: camp._id },
   });
   addLog(camp._id, "User");
+  await adjustUserCount(camp._id, camp.totalUsers);
 
   const message = thumbnailUploaded
     ? "Camp created successfully."
@@ -70,6 +72,7 @@ const joinCamp = asyncWrapper(async (req, res) => {
     throw new ApiError("User already joined this camp", 400);
 
   user.camps.push(camp._id);
+  await adjustUserCount(camp._id, camp.totalUsers);
   camp.totalUsers += 1;
   await Promise.all([user.save(), camp.save()]);
 
@@ -106,6 +109,7 @@ const leaveCamp = asyncWrapper(async (req, res) => {
   await user.save();
 
   const camp = await Camp.findById(campId).select("totalUsers");
+  await adjustUserCount(camp._id, camp.totalUsers, -1);
   camp.totalUsers -= 1;
   await camp.save();
 

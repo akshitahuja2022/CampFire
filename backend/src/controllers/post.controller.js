@@ -73,12 +73,6 @@ const getPosts = asyncWrapper(async (req, res) => {
   if (!camp) throw new ApiError("Camp not found", 404);
   if (camp.status === "expired") throw new ApiError("Camp expired", 403);
 
-  const user = await User.findById(req.userId).select("camps").lean();
-  const joined = user.camps.some((id) => id.toString() === campId);
-  if (!joined) {
-    throw new ApiError("Join camp to view posts", 403);
-  }
-
   const limit = 10;
   const cursor = req.body?.cursor;
 

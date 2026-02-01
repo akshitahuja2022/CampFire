@@ -3,6 +3,7 @@ import Camp from "../models/camp.model.js";
 import User from "../models/user.model.js";
 import Post from "../models/post.model.js";
 import Message from "../models/message.model.js";
+import { flushAll } from "../utils/cache.util.js";
 
 const burnCamps = async () => {
   try {
@@ -28,6 +29,7 @@ const burnCamps = async () => {
       Message.deleteMany({ campId: { $in: ids } }),
       Camp.deleteMany({ _id: { $in: ids } }),
     ]);
+    await flushAll();
   } catch (error) {
     console.log(error.message);
   }
