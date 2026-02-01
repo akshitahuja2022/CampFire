@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { CampContext } from "./authContext";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext, CampContext } from "./authContext";
+import { handleError } from "../notify/Notification";
 
 export const CampContextProvider = ({ children }) => {
   const [campForm, setCampForm] = useState({
@@ -21,6 +22,31 @@ export const CampContextProvider = ({ children }) => {
   const [content, setContent] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+
+  const { setLoading } = useContext(AuthContext);
+
+  useEffect(() => {
+    const hydrateJoinedCamps = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(
+          `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/my-camps`,
+          { credentials: "include" },
+        );
+        const result = await res.json();
+        if (result.success) {
+          setJoinCamps(result.data.camps);
+          setYourCamps(result.data.camps);
+        }
+      } catch (err) {
+        handleError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    hydrateJoinedCamps();
+  }, [setLoading]);
 
   return (
     <CampContext.Provider

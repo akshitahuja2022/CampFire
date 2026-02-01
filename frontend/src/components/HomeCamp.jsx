@@ -1,5 +1,5 @@
-import React, { useContext, useEffect } from "react";
-import { handleError } from "../notify/Notification";
+import { useContext, useEffect } from "react";
+import { handleError, handleSuccess } from "../notify/Notification";
 import { AuthContext, CampContext } from "../context/authContext";
 import Loader from "./Loader";
 import { FaUserGroup } from "react-icons/fa6";
@@ -8,7 +8,14 @@ import { Link, useNavigate } from "react-router-dom";
 const HomeCamp = () => {
   const navigate = useNavigate();
   const { loading, setLoading } = useContext(AuthContext);
-  const { personalisedCamps, setPpersonalisedCamps } = useContext(CampContext);
+  const {
+    personalisedCamps,
+    setPpersonalisedCamps,
+    joinCamps,
+    setJoinCamps,
+    setYourCamps,
+  } = useContext(CampContext);
+
   useEffect(() => {
     const personalisedCamps = async () => {
       try {
@@ -31,6 +38,41 @@ const HomeCamp = () => {
 
     personalisedCamps();
   }, [setLoading, setPpersonalisedCamps]);
+
+  const handleJoinCamp = async (id) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/join/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(),
+          credentials: "include",
+        },
+      );
+      const result = await response.json();
+      if (result.success) {
+        handleSuccess(result.message);
+        const joinedCamp = personalisedCamps.find((camp) => camp._id === id);
+
+        if (joinedCamp) {
+          setJoinCamps((prev) => [...prev, joinedCamp]);
+          setYourCamps((prev) => [...prev, joinedCamp]);
+        } else {
+          return;
+        }
+        setTimeout(() => navigate("/your-camps"), 2000);
+      } else {
+        handleError(result.message);
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const isJoined = (campId) => joinCamps?.some((c) => c._id === campId);
 
   if (loading) {
     return <Loader />;
@@ -97,8 +139,18 @@ const HomeCamp = () => {
                 <span>{camp.totalUsers}</span>
               </div>
 
-              <button className="px-4 py-1.5 text-sm rounded-lg bg-orange-400 text-black font-bold hover:bg-orange-500 transition shrink-0">
-                Join
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!isJoined(camp._id)) {
+                    handleJoinCamp(camp._id);
+                  }
+                }}
+                className={`px-4 py-1.5 text-sm rounded-lg font-bold bg-orange-400 text-black transition shrink-0
+                 ${isJoined(camp._id) ? "cursor-not-allowed" : "hover:bg-orange-500"}
+               `}
+              >
+                {isJoined(camp._id) ? "Joined" : "Join"}
               </button>
             </div>
           </div>

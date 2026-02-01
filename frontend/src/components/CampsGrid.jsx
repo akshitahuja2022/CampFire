@@ -5,8 +5,8 @@ import { useContext } from "react";
 import { CampContext } from "../context/authContext";
 
 const CampsGrid = ({ camps }) => {
-  const { setJoinCamps } = useContext(CampContext);
   const navigate = useNavigate();
+  const { joinCamps, setJoinCamps, setYourCamps } = useContext(CampContext);
 
   const handleJoinCamp = async (id) => {
     try {
@@ -24,7 +24,16 @@ const CampsGrid = ({ camps }) => {
       const result = await response.json();
       if (result.success) {
         handleSuccess(result.message);
-        setJoinCamps(result.data);
+
+        const joinedCamp = camps.find((camp) => camp._id === id);
+
+        if (joinedCamp) {
+          setJoinCamps((prev) => [...prev, joinedCamp]);
+          setYourCamps((prev) => [...prev, joinedCamp]);
+        } else {
+          return;
+        }
+
         setTimeout(() => navigate("/your-camps"), 2000);
       } else {
         handleError(result.message);
@@ -33,6 +42,8 @@ const CampsGrid = ({ camps }) => {
       handleError(error);
     }
   };
+
+  const isJoined = (campId) => joinCamps?.some((c) => c._id === campId);
 
   return (
     <div>
@@ -70,11 +81,15 @@ const CampsGrid = ({ camps }) => {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleJoinCamp(camp._id);
+                  if (!isJoined(camp._id)) {
+                    handleJoinCamp(camp._id);
+                  }
                 }}
-                className="px-4 py-1.5 text-sm rounded-lg bg-orange-400 text-black font-bold hover:bg-orange-500 transition shrink-0"
+                className={`px-4 py-1.5 text-sm rounded-lg font-bold bg-orange-400 text-black transition shrink-0
+                 ${isJoined(camp._id) ? "cursor-not-allowed" : "hover:bg-orange-500"}
+               `}
               >
-                Join
+                {isJoined(camp._id) ? "Joined" : "Join"}
               </button>
             </div>
           </div>
