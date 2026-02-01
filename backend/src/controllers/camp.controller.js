@@ -96,7 +96,7 @@ const joinCamp = asyncWrapper(async (req, res) => {
 });
 
 const leaveCamp = asyncWrapper(async (req, res) => {
-  const { campId } = req.body;
+  const campId = req.params.id;
   if (!campId) throw new ApiError("campId is required", 400);
 
   const user = await User.findById(req.userId).select("camps");

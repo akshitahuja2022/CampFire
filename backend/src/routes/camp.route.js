@@ -6,6 +6,7 @@ import {
   topCamps,
   personalisedCamps,
   joinCamp,
+  leaveCamp,
   myCamps,
 } from "../controllers/camp.controller.js";
 import { validateUser } from "../middlewares/validateUser.middleware.js";
@@ -16,6 +17,7 @@ const router = Router();
 
 router.post("/create", validateUser, validate(campSchema), createCamp);
 router.post("/join/:id", validateUser, joinCamp);
+router.post("/leave/:id", validateUser, leaveCamp);
 router.get("/get", validateUser, personalisedCamps);
 router.get("/trending", validateUser, trendingCamps);
 router.get("/top", validateUser, topCamps);
