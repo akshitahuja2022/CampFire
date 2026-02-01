@@ -1,6 +1,39 @@
+import { useContext, useState } from "react";
 import { FiMoreHorizontal } from "react-icons/fi";
+import { Link } from "react-router-dom";
+import { AuthContext, CampContext } from "../context/authContext";
+import { handleError, handleSuccess } from "../notify/Notification";
 
 const PostCard = ({ post }) => {
+  const [active, setActive] = useState(false);
+
+  const { loading, setLoading } = useContext(AuthContext);
+  const { posts, setPosts } = useContext(CampContext);
+
+  const handleDeletePost = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKNED_URL}/api/v1/post/delete/${post._id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        },
+      );
+      const result = await response.json();
+      if (result.success) {
+        handleSuccess(result.message);
+        setPosts(posts.filter((p) => p._id !== post._id));
+      } else {
+        handleError(result.message);
+      }
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <article
       className="w-full max-w-full sm:max-w-xl md:max-w-2xl xl:max-w-3xl bg-[#0f0f11] border border-[#1f1f23] rounded-xl p-3 sm:p-4  md:p-5mx-auto
@@ -22,9 +55,30 @@ const PostCard = ({ post }) => {
           </div>
         </div>
 
-        <button className="p-2 rounded-full hover:bg-[#18181b] shrink-0">
-          <FiMoreHorizontal />
-        </button>
+        <div className="relative">
+          <button
+            onClick={() => setActive(!active)}
+            className="p-2 rounded-full hover:bg-[#18181b] shrink-0"
+          >
+            <FiMoreHorizontal />
+          </button>
+          {active && (
+            <div className="absolute right-0 mt-2 w-40 bg-[#1f1f23] rounded-md shadow-lg z-50">
+              <div className="px-2 py-2 space-y-1">
+                <Link className="text-white hover:bg-orange-400 hover:text-black block px-3 py-2 rounded-md text-base font-medium">
+                  Edit Post
+                </Link>
+                <button
+                  onClick={handleDeletePost}
+                  disabled={loading}
+                  className={`text-white hover:bg-orange-400 hover:text-black block px-3 py-2 rounded-md text-base font-medium ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                >
+                  Delete Post
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       <p className="text-sm sm:text-[15px] leading-relaxed mb-3 whitespace-pre-wrap break-words">
