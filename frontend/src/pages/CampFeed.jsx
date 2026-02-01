@@ -9,7 +9,7 @@ import { CampContext } from "../context/authContext";
 const CampFeed = () => {
   const { id } = useParams();
 
-  const { setOpen, posts } = useContext(CampContext);
+  const { posts } = useContext(CampContext);
 
   return (
     <main className="min-h-screen w-full flex flex-col items-center pb-32">
@@ -27,7 +27,7 @@ const CampFeed = () => {
 
       <FloatingCreateButton />
 
-      <CreatePostModal id={id} onClose={() => setOpen(false)} />
+      <CreatePostModal id={id} />
     </main>
   );
 };

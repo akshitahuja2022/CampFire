@@ -177,17 +177,6 @@ const SecurityPrivacy = () => {
               </div>
             </div>
           </form>
-
-          <div className="bg-[#111113] px-6 sm:px-8 md:px-10 py-4 border-t border-[#1f1f23]">
-            <p className="text-xs sm:text-sm text-[#a3a3a3]">
-              Last updated:{" "}
-              {new Date().toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </p>
-          </div>
         </div>
       </div>
     </div>

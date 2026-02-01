@@ -4,10 +4,10 @@ import { AuthContext, CampContext } from "../context/authContext";
 import { handleError, handleSuccess } from "../notify/Notification";
 import { useParams } from "react-router-dom";
 
-const CreatePostModal = ({ onClose }) => {
+const CreatePostModal = () => {
   const { id } = useParams();
 
-  const { setLoading } = useContext(AuthContext);
+  const { loading, setLoading } = useContext(AuthContext);
 
   const {
     open,
@@ -40,7 +40,7 @@ const CreatePostModal = ({ onClose }) => {
       formData.append("content", content);
 
       if (imageFile) {
-        formData.append("image", imageFile);
+        formData.append("post", imageFile);
       }
 
       const response = await fetch(
@@ -73,7 +73,7 @@ const CreatePostModal = ({ onClose }) => {
     <>
       <div
         className="fixed inset-0 z-30 bg-black/10 backdrop-blur-sm"
-        onClick={onClose}
+        onClick={() => setOpen(false)}
       />
 
       <div className="m-4 lg:m-0 lg:ml-60 fixed inset-0 z-40 flex items-end sm:items-center justify-center">
@@ -85,7 +85,12 @@ const CreatePostModal = ({ onClose }) => {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold">Create Your Post</h2>
             <button
-              onClick={onClose}
+              onClick={() => {
+                setOpen(false);
+                setContent("");
+                setImagePreview(null);
+                setImageFile(null);
+              }}
               className="p-2 rounded-full hover:bg-orange-400 hover:text-black"
             >
               <FiX className="w-5 h-5" />
@@ -97,18 +102,18 @@ const CreatePostModal = ({ onClose }) => {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="What's on your mind?"
-              rows={6}
+              rows={imagePreview ? 3 : 4}
               className="w-full resize-none rounded-lg outline-none bg-[#18181b] border border-[#1f1f23] p-3 text-md"
               required
             />
 
             <div className="space-y-2">
               {imagePreview && (
-                <div className="relative">
+                <div className="relative rounded-lg">
                   <img
                     src={imagePreview}
                     alt="Preview"
-                    className="w-full max-h-64 object-cover rounded-lg"
+                    className="w-full max-w-full max-h-60 mx-auto object-center rounded-lg"
                   />
                   <button
                     type="button"
@@ -138,14 +143,20 @@ const CreatePostModal = ({ onClose }) => {
             <div className="flex justify-end gap-3 pt-2">
               <button
                 type="button"
-                onClick={onClose}
+                onClick={() => {
+                  setOpen(false);
+                  setContent("");
+                  setImagePreview(null);
+                  setImageFile(null);
+                }}
                 className="px-6 sm:px-8 py-2.5 sm:py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 text-sm sm:text-base"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className={`px-6 sm:px-8 py-2.5 sm:py-3 bg-orange-400 text-black font-semibold rounded-lg hover:bg-orange-500 text-sm sm:text-base`}
+                disabled={loading}
+                className={`px-6 sm:px-8 py-2.5 sm:py-3 bg-orange-400 text-black font-semibold rounded-lg hover:bg-orange-500 text-sm sm:text-base ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 Post
               </button>
