@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 const CreatePostModal = () => {
   const { id } = useParams();
 
-  const { setLoading } = useContext(AuthContext);
+  const { loading, setLoading } = useContext(AuthContext);
 
   const {
     open,
@@ -52,7 +52,6 @@ const CreatePostModal = () => {
         },
       );
       const result = await response.json();
-      console.log(result);
       if (result.success) {
         handleSuccess(result.message);
         setPosts((prev) => [result.data, ...prev]);
@@ -156,7 +155,8 @@ const CreatePostModal = () => {
               </button>
               <button
                 type="submit"
-                className={`px-6 sm:px-8 py-2.5 sm:py-3 bg-orange-400 text-black font-semibold rounded-lg hover:bg-orange-500 text-sm sm:text-base`}
+                disabled={loading}
+                className={`px-6 sm:px-8 py-2.5 sm:py-3 bg-orange-400 text-black font-semibold rounded-lg hover:bg-orange-500 text-sm sm:text-base ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 Post
               </button>
