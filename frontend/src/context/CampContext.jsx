@@ -25,6 +25,11 @@ export const CampContextProvider = ({ children }) => {
 
   const { setLoading } = useContext(AuthContext);
 
+  const [messagesByPost, setMessagesByPost] = useState({});
+
+  const [cursor, setCursor] = useState(null);
+  const [me, setMe] = useState(null);
+
   useEffect(() => {
     const fetchYourCamps = async () => {
       try {
@@ -76,6 +81,12 @@ export const CampContextProvider = ({ children }) => {
         setImagePreview,
         imageFile,
         setImageFile,
+        cursor,
+        setCursor,
+        me,
+        setMe,
+        messagesByPost,
+        setMessagesByPost,
       }}
     >
       {children}
