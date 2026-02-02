@@ -26,9 +26,12 @@ const PostCard = ({ post, messagesByPost, campId }) => {
         );
         const result = await response.json();
 
+        const sortedMessages = (result.data.messages || []).sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+        );
         setMessagesByPost((prev) => ({
           ...prev,
-          [post._id]: result.data.messages || [],
+          [post._id]: sortedMessages,
         }));
 
         setCursor(result.data.cursor || null);
@@ -44,13 +47,16 @@ const PostCard = ({ post, messagesByPost, campId }) => {
   }, [setMessagesLoading, post._id, setCursor, setMe, setMessagesByPost]);
 
   const editMessage = (message) => {
-    const newText = prompt("Edit message", message.content);
-    if (!newText || newText === message.content) return;
-
     socket.emit("edit-message", {
       messageId: message._id,
-      text: newText,
+      text: message.content,
     });
+    setMessagesByPost((prev) => ({
+      ...prev,
+      [message.postId]: prev[message.postId]?.map((m) =>
+        m._id === message._id ? { ...m, content: message.content } : m,
+      ),
+    }));
   };
 
   const deleteMessage = (messageId) => {
@@ -62,6 +68,7 @@ const PostCard = ({ post, messagesByPost, campId }) => {
   };
 
   const sendMessage = (text) => {
+    const tempId = Date.now();
     const tempMessage = {
       _id: Date.now(),
       content: text,
@@ -69,17 +76,19 @@ const PostCard = ({ post, messagesByPost, campId }) => {
       postId: post._id,
       pending: true,
       createdAt: new Date().toISOString(),
+      tempId,
     };
 
     setMessagesByPost((prev) => ({
       ...prev,
-      [post._id]: [tempMessage, ...(prev[post._id] || [])],
+      [post._id]: [...(prev[post._id] || []), tempMessage],
     }));
 
     socket.emit("message", {
       campId,
       postId: post._id,
       text,
+      tempId,
     });
   };
 
@@ -251,19 +260,19 @@ const PostCard = ({ post, messagesByPost, campId }) => {
         <div className="text-xs text-[#a3a3a3]">
           {new Date(post.createdAt).toLocaleString()}
         </div>
+
+        <div className="relative w-full max-w-full sm:max-w-xl md:max-w-2xl xl:max-w-3xl">
+          <MessageList
+            messagesByPost={messagesByPost}
+            me={me}
+            messagesLoading={messagesLoading}
+            onEdit={editMessage}
+            onDelete={deleteMessage}
+          />
+
+          <MessageInput onSend={sendMessage} />
+        </div>
       </article>
-
-      <div className="relative w-full max-w-full sm:max-w-xl md:max-w-2xl xl:max-w-3xl">
-        <MessageList
-          messagesByPost={messagesByPost}
-          me={me}
-          messagesLoading={messagesLoading}
-          onEdit={editMessage}
-          onDelete={deleteMessage}
-        />
-
-        <MessageInput onSend={sendMessage} />
-      </div>
     </>
   );
 };

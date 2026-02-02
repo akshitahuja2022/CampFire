@@ -21,10 +21,16 @@ const CampFeed = () => {
     });
 
     socket.on("message", ({ message }) => {
-      setMessagesByPost((prev) => ({
-        ...prev,
-        [message.postId]: [message, ...(prev[message.postId] || [])],
-      }));
+      setMessagesByPost((prev) => {
+        const msgs = prev[message.postId] || [];
+
+        const filtered = msgs.filter((m) => m.tempId !== message.tempId);
+
+        return {
+          ...prev,
+          [message.postId]: [...filtered, message],
+        };
+      });
     });
 
     socket.on("edit-message", ({ update }) => {
@@ -72,7 +78,7 @@ const CampFeed = () => {
         ))
       )}
 
-      {/* <FloatingCreateButton /> */}
+      <FloatingCreateButton />
 
       <CreatePostModal id={id} />
     </main>

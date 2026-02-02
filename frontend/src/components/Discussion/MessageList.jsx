@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import MessageBubble from "./MessageBubble";
 
 const MessageList = ({
@@ -7,6 +8,11 @@ const MessageList = ({
   onEdit,
   onDelete,
 }) => {
+  const messagesEndRef = useRef(null);
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messagesByPost]);
+
   if (messagesLoading) {
     return (
       <div className="py-6 text-center text-sm text-white">
@@ -26,7 +32,7 @@ const MessageList = ({
           No replies yet. Start the campfire 🔥
         </p>
       ) : (
-        messagesByPost.map((msg) => (
+        messagesByPost?.map((msg) => (
           <MessageBubble
             key={msg._id}
             message={msg}
@@ -36,6 +42,7 @@ const MessageList = ({
           />
         ))
       )}
+      <div ref={messagesEndRef} />
     </div>
   );
 };
