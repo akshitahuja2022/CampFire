@@ -47,13 +47,16 @@ const PostCard = ({ post, messagesByPost, campId }) => {
   }, [setMessagesLoading, post._id, setCursor, setMe, setMessagesByPost]);
 
   const editMessage = (message) => {
-    const newText = prompt("Edit message", message.content);
-    if (!newText || newText === message.content) return;
-
     socket.emit("edit-message", {
       messageId: message._id,
-      text: newText,
+      text: message.content,
     });
+    setMessagesByPost((prev) => ({
+      ...prev,
+      [message.postId]: prev[message.postId]?.map((m) =>
+        m._id === message._id ? { ...m, content: message.content } : m,
+      ),
+    }));
   };
 
   const deleteMessage = (messageId) => {
