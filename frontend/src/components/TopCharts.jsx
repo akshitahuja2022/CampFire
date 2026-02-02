@@ -15,21 +15,22 @@ const TopCharts = () => {
       try {
         setLoading(true);
 
-        const [trendingRes, topRes] = await Promise.all([
-          fetch(`${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/trending`, {
-            method: "GET",
-            credentials: "include",
-          }),
-          fetch(`${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/top`, {
-            method: "GET",
-            credentials: "include",
-          }),
-        ]);
+        const url =
+          activeTab === "trending"
+            ? `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/trending`
+            : `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/top`;
 
-        const trendingData = await trendingRes.json();
-        const topData = await topRes.json();
-        setTrendingCamps(trendingData.data.camps);
-        setTopCamps(topData.data.camps);
+        const response = await fetch(url, {
+          method: "GET",
+          credentials: "include",
+        });
+
+        const result = await response.json();
+        if (activeTab === "trending") {
+          setTrendingCamps(result.data.camps);
+        } else {
+          setTopCamps(result.data.camps);
+        }
       } catch (error) {
         handleError(error);
       } finally {
@@ -37,8 +38,21 @@ const TopCharts = () => {
       }
     };
 
+    if (
+      (activeTab === "trending" && trendingCamps.length) ||
+      (activeTab === "top" && topCamps.length)
+    )
+      return;
+
     fetchCamps();
-  }, [setLoading, setTopCamps, setTrendingCamps]);
+  }, [
+    activeTab,
+    setLoading,
+    setTopCamps,
+    setTrendingCamps,
+    topCamps.length,
+    trendingCamps.length,
+  ]);
 
   if (loading) {
     return <Loader />;
