@@ -28,9 +28,7 @@ const MessageList = ({
       "
     >
       {messagesByPost?.length === 0 ? (
-        <p className="text-center text-xs text-gray-400">
-          No replies yet. Start the campfire 🔥
-        </p>
+        <p className="text-center text-xs text-gray-400">No replies yet.</p>
       ) : (
         messagesByPost?.map((msg) => (
           <MessageBubble
