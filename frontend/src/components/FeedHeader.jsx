@@ -71,8 +71,8 @@ const FeedHeader = () => {
   const isJoined = (campId) =>
     Array.isArray(joinCamps) && joinCamps.some((c) => c._id === campId);
   return (
-    <header className="sticky top-0 z-20 bg-[#111113] border border-[#1f1f23] m-2 px-4 py-4 md:px-6 rounded-lg">
-      <div className="max-w-3xl mx-auto flex flex-row sm:flex-row items-start md:items-center justify-between gap-2 md:gap-4">
+    <header className="sticky top-0 z-20 bg-[#111113] border border-[#1f1f23] mt-2 mb-2 px-4 py-4 md:px-6 rounded-lg">
+      <div className="mx-auto flex flex-row sm:flex-row items-start md:items-center justify-between gap-2 md:gap-4">
         <div className="min-w-0">
           <h1 className="text-white text-lg sm:text-2xl font-semibold mb-2">
             {camp?.title}
