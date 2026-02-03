@@ -5,7 +5,6 @@ import { socket } from "../utils/socket.js";
 import MessageList from "../components/Discussion/MessageList.jsx";
 import MessageInput from "../components/Discussion/MessageInput.jsx";
 import { useParams } from "react-router-dom";
-import FeedHeader from "../components/FeedHeader.jsx";
 
 const DiscussionPage = () => {
   const { id: campId, postId } = useParams();
@@ -117,10 +116,6 @@ const DiscussionPage = () => {
   return (
     <>
       <main className="min-h-screen w-full flex flex-col items-center pb-32">
-        <div className="mx-auto w-full max-w-full sm:max-w-xl md:max-w-2xl xl:max-w-3xl">
-          <FeedHeader />
-        </div>
-
         <article className="mx-auto w-full max-w-full sm:max-w-xl md:max-w-2xl xl:max-w-3xl bg-[#0f0f11] border border-[#2c2c30] rounded-xl p-3 sm:p-4 md:p-5">
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex items-center gap-3 min-w-0">
