@@ -1,69 +1,68 @@
-import stopword from "stopword";
-import natural from "natural";
-import Camp from "../models/camp.model.js";
 import levenshtein from "fast-levenshtein";
+import Camp from "../models/camp.model.js";
 
-const normalizeTitle = (title) => {
-  return stopword.removeStopwords(
-    title
-      .toLowerCase()
-      .replace(/[^a-z0-9\s]/g, "")
-      .split(/\s+/)
-      .filter((word) => word.length > 1)
-      .map((word) => natural.PorterStemmer.stem(word)),
-  );
-};
-
-const jaccardSimilarity = (a, b) => {
-  const setA = new Set(a);
-  const setB = new Set(b);
-  const intersection = [...setA].filter((x) => setB.has(x));
-  const union = new Set([...setA, ...setB]);
-  return union.size === 0 ? 0 : intersection.length / union.size;
+const normalizeTitle = (str) => {
+  if (!str) return "";
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s]/g, "")
+    .replace(/\s+/g, " ");
 };
 
 const editSimilarity = (a, b) => {
-  const distance = levenshtein.get(a, b);
+  const dist = levenshtein.get(a, b);
   const maxLen = Math.max(a.length, b.length);
-  return maxLen === 0 ? 1 : 1 - distance / maxLen;
+  return maxLen === 0 ? 1 : 1 - dist / maxLen;
 };
 
-const scoreSimilarity = (titleA, titleB) => {
-  const tokensA = normalizeTitle(titleA);
-  const tokensB = normalizeTitle(titleB);
+const findDuplicate = async (title, { threshold = 0.8, limit = 50 } = {}) => {
+  if (!title || !title.trim()) return null;
 
-  const jaccard = jaccardSimilarity(tokensA, tokensB);
+  const normalizedInput = normalizeTitle(title);
+  const inputKeywords = normalizedInput.split(" ");
 
-  if (jaccard < 0.2) return 0;
-
-  const edit = editSimilarity(titleA.toLowerCase(), titleB.toLowerCase());
-
-  const adjustedEdit = edit * jaccard;
-
-  return jaccard * 0.7 + adjustedEdit * 0.3;
-};
-
-const findDuplicate = async (title) => {
-  const keywords = normalizeTitle(title);
-  if (keywords.length === 0) return null;
+  if (!inputKeywords.length) return null;
 
   const camps = await Camp.find(
-    { keywords: { $in: keywords } },
+    { keywords: { $in: inputKeywords } },
     { _id: 1, title: 1, keywords: 1 },
-  ).limit(20);
+  )
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .lean();
 
-  if (!camps.length) return null;
+  let bestMatch = null;
+  let bestScore = 0;
 
-  const bestMatch = camps
-    .map((camp) => ({
-      campId: camp._id,
-      title: camp.title,
-      score: scoreSimilarity(title, camp.title),
-    }))
-    .filter((c) => c.score >= 0.55)
-    .sort((a, b) => b.score - a.score)[0];
+  for (const camp of camps) {
+    if (!camp.keywords?.length) continue;
 
-  return bestMatch || null;
+    const normalizedExisting = camp.keywords.join(" ");
+
+    const lenDiff = Math.abs(
+      normalizedInput.length - normalizedExisting.length,
+    );
+    if (
+      lenDiff >
+      Math.min(normalizedInput.length, normalizedExisting.length) * 0.5
+    ) {
+      continue;
+    }
+
+    const score = editSimilarity(normalizedInput, normalizedExisting);
+
+    if (score >= threshold && score > bestScore) {
+      bestScore = score;
+      bestMatch = {
+        campId: camp._id,
+        title: camp.title,
+        score,
+      };
+    }
+  }
+
+  return bestMatch;
 };
 
-export { findDuplicate, normalizeTitle };
+export { normalizeTitle, findDuplicate };
