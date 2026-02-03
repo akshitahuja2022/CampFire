@@ -1,4 +1,3 @@
-import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -19,6 +18,8 @@ import AddInterests from "./pages/AddInterests";
 import ProtectedRoute from "./components/ProtectedRoute";
 import UploadAvatar from "./pages/UploadAvatar";
 import CampFeed from "./pages/CampFeed";
+import DiscussionPage from "./pages/DiscussionPage";
+
 const App = () => {
   return (
     <>
@@ -42,6 +43,10 @@ const App = () => {
 
             <Route path="camp-feed/:id" element={<CampFeed />} />
 
+            <Route
+              path="camp-feed/:id/post/:postId"
+              element={<DiscussionPage />}
+            />
             <Route path="settings/account" element={<AccountProfile />} />
             <Route path="settings/privacy" element={<SecurityPrivacy />} />
             <Route path="settings/add-interest" element={<AddInterests />} />
