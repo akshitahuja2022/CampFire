@@ -1,6 +1,5 @@
 import { useContext } from "react";
-import { IoEyeOutline } from "react-icons/io5";
-import { IoEyeOffOutline } from "react-icons/io5";
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import { handleError, handleSuccess } from "../notify/Notification";
@@ -26,15 +25,14 @@ const Login = () => {
         `${import.meta.env.VITE_BACKNED_URL}/api/v1/auth/login`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
           credentials: "include",
         },
       );
 
       const data = await response.json();
+
       if (response.status === 403 && data.message === "Account not verified") {
         handleError(
           "Account not verified. Redirecting to verification page...",
@@ -44,14 +42,12 @@ const Login = () => {
         handleSuccess(data.message);
         localStorage.setItem("user", JSON.stringify(data.data));
         setLoginUser(data.data);
-        setTimeout(() => navigate("/"), 2000);
+        setTimeout(() => navigate("/"), 1500);
       } else {
         handleError(data.message);
       }
-      setFormData({
-        username: "",
-        password: "",
-      });
+
+      setFormData({ username: "", password: "" });
     } catch (error) {
       handleError(error);
     } finally {
@@ -61,104 +57,135 @@ const Login = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md rounded-2xl border border-[#1f1f23]">
-        <div className="bg-[#111113] rounded-2xl shadow-xl p-8 sm:p-10">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-bg">
+      <div className="w-full max-w-md">
+        <div
+          className="
+            bg-surface border border-border
+            rounded-2xl p-8 sm:p-10
+            shadow-[0_0_40px_rgba(0,0,0,0.4)]
+          "
+        >
+          {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl text-[#fafafa] sm:text-4xl font-bold mb-2">
+            <h1
+              className="
+                text-3xl sm:text-4xl font-extrabold
+                bg-gradient-to-r from-accent to-accent-hover
+                bg-clip-text text-transparent
+              "
+            >
               Welcome Back
             </h1>
-            <p className="text-[#a3a3a3] text-sm sm:text-base">
-              Rekindle your session to continue.
+            <p className="text-text-secondary text-sm sm:text-base mt-2">
+              Rekindle your session to continue
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-3">
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Username */}
             <div>
-              <label
-                htmlFor="username"
-                className="block text-sm font-semibold text-[#fafafa] mb-2"
-              >
+              <label className="block text-sm font-semibold text-text-primary mb-2">
                 Username
               </label>
               <input
                 type="text"
-                id="username"
                 name="username"
                 value={formData.username}
                 onChange={handleInputChange}
                 placeholder="Enter your username"
-                className="w-full px-4 py-2 rounded-lg transition-all duration-200 placeholder-gray-400 bg-[#18181b] text-white border border-[#1f1f23] outline-none"
-                aria-label="Username"
+                className="
+                  w-full px-4 py-2.5 rounded-xl
+                  bg-bg text-text-primary
+                  border border-border
+                  placeholder:text-text-muted
+                  focus:border-accent focus:ring-1 focus:ring-accent/40
+                  transition-all outline-none
+                "
               />
             </div>
 
+            {/* Password */}
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-semibold text-[#fafafa] mb-2"
-              >
+              <label className="block text-sm font-semibold text-text-primary mb-2">
                 Password
               </label>
-              <div className="relative mb-3">
+              <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
-                  id="password"
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
                   placeholder="Enter your password"
-                  className="w-full px-4 py-2 pr-12 rounded-lg transition-all duration-200 text-white placeholder-gray-400 bg-[#18181b] border border-[#1f1f23] outline-none"
+                  className="
+                    w-full px-4 py-2.5 rounded-xl
+                    bg-bg text-text-primary
+                    border border-border
+                    placeholder:text-text-muted
+                    focus:border-accent focus:ring-1 focus:ring-accent/40
+                    transition-all outline-none
+                  "
                 />
                 <button
                   type="button"
-                  onClick={togglePasswordVisibility}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-[#18181b] border border-[#1f1f23] transition-colors duration-200 focus:outline-none rounded-md p-1"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="
+                    absolute right-3 top-1/2 -translate-y-1/2
+                    text-text-muted hover:text-accent
+                    transition-colors
+                  "
                 >
                   {showPassword ? (
-                    <IoEyeOffOutline className="h-5 w-5 text-white" />
+                    <IoEyeOffOutline size={20} />
                   ) : (
-                    <IoEyeOutline className="h-5 w-5 text-white" />
+                    <IoEyeOutline size={20} />
                   )}
                 </button>
               </div>
             </div>
 
+            {/* Forgot password */}
             <div className="flex justify-end">
-              <Link to="/forgot-password" className="text-white cursor-pointer">
+              <Link
+                to="/forgot-password"
+                className="text-sm text-accent hover:text-accent-hover transition-colors"
+              >
                 Forgot password?
               </Link>
             </div>
 
+            {/* CTA */}
             <button
               disabled={loading}
               type="submit"
-              className={`w-full bg-orange-400 hover:bg-orange-300 text-black font-bold py-3 px-4 rounded-lg shadow-lg ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`
+                w-full mt-4 py-3 rounded-xl
+                bg-accent hover:bg-accent-hover
+                text-black font-bold
+                shadow-lg
+                transition-all
+                hover:scale-[1.02] active:scale-[0.98]
+                ${loading ? "opacity-50 cursor-not-allowed" : ""}
+              `}
             >
               Enter the Camp
             </button>
           </form>
 
+          {/* Footer */}
           <div className="mt-6 text-center">
-            <p className="text-[#a3a3a3] text-sm sm:text-md font-bold">
-              Don't have an account?
+            <p className="text-text-secondary text-sm font-semibold">
+              Don’t have an account?
               <Link
                 to="/signup"
-                className="text-white font-bold transition-colors duration-200 rounded px-1"
+                className="ml-1 text-accent hover:text-accent-hover transition-colors"
               >
-                SignUp
+                Sign up
               </Link>
             </p>
           </div>

@@ -5,20 +5,18 @@ import { handleError, handleSuccess } from "../notify/Notification";
 
 const VerifyOtp = () => {
   const navigate = useNavigate();
-
-  const {
-    formData,
-    setFormData,
-    loading,
-    setLoading,
-    // setIsLogin,
-    setLoginUser,
-  } = useContext(AuthContext);
+  const { formData, setFormData, loading, setLoading, setLoginUser } =
+    useContext(AuthContext);
 
   const inputsRef = useRef([]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.otp || formData.otp.length !== 6) {
+      handleError("Please enter the complete 6-digit code");
+      return;
+    }
 
     setLoading(true);
     try {
@@ -26,9 +24,7 @@ const VerifyOtp = () => {
         `${import.meta.env.VITE_BACKNED_URL}/api/v1/auth/verify-otp`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ code: formData.otp }),
           credentials: "include",
         },
@@ -52,7 +48,6 @@ const VerifyOtp = () => {
 
   const handleOtpChange = (e, index) => {
     const value = e.target.value;
-
     if (!/^\d?$/.test(value)) return;
 
     const otpArray = (formData.otp || "").split("");
@@ -87,7 +82,7 @@ const VerifyOtp = () => {
       if (data.success) {
         handleSuccess(data.message);
         setFormData((prev) => ({ ...prev, otp: "" }));
-        inputsRef.current[0].focus();
+        inputsRef.current[0]?.focus();
       } else {
         handleError(data.message || "Failed to resend code");
       }
@@ -97,57 +92,61 @@ const VerifyOtp = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md rounded-2xl border border-[#1f1f23]">
-        <div className="bg-[#111113] rounded-2xl shadow-xl p-8 sm:p-10">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-xl sm:text-3xl font-bold text-[#fafafa] mb-2">
-              Enter Verification Code
-            </h1>
-            <p className="text-[#a3a3a3] text-sm sm:text-base">
-              We've sent 6-digit otp to your email.
-              <span className="block">
-                Enter it below to ignite your session.
-              </span>
-            </p>
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="w-full max-w-md bg-surface border border-border rounded-2xl p-8 sm:p-10">
+        <div className="text-center mb-8">
+          <h1 className="text-xl sm:text-3xl font-bold text-text-primary">
+            Verify your account
+          </h1>
+          <p className="mt-2 text-sm text-text-secondary">
+            Enter the 6-digit code sent to your email
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="flex justify-center gap-2 sm:gap-3">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <input
+                key={index}
+                ref={(el) => (inputsRef.current[index] = el)}
+                type="text"
+                maxLength="1"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                onChange={(e) => handleOtpChange(e, index)}
+                onKeyDown={(e) => handleKeyDown(e, index)}
+                className="
+                  w-11 h-11 sm:w-12 sm:h-12
+                  rounded-xl text-center text-lg
+                  bg-bg border border-border
+                  text-text-primary
+                  outline-none focus:border-accent
+                "
+              />
+            ))}
           </div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <div className="flex justify-center gap-2 sm:gap-3">
-              {Array.from({ length: 6 }).map((_, index) => (
-                <input
-                  key={index}
-                  ref={(el) => (inputsRef.current[index] = el)}
-                  type="text"
-                  maxLength="1"
-                  inputMode="numeric"
-                  onChange={(e) => handleOtpChange(e, index)}
-                  onKeyDown={(e) => handleKeyDown(e, index)}
-                  className="w-10 h-10 sm:w-12 sm:h-12 text-center outline-none text-base sm:text-lg md:text-xl bg-[#2d2d30] text-white border border-[#1f1f23] rounded-lg"
-                  autoComplete="one-time-code"
-                />
-              ))}
-            </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className={`
+              w-full py-3 rounded-xl font-bold
+              bg-accent hover:bg-accent-hover
+              text-black transition
+              ${loading ? "opacity-50 cursor-not-allowed" : ""}
+            `}
+          >
+            Verify OTP
+          </button>
 
-            <button
-              disabled={loading}
-              type="submit"
-              className={`w-full bg-orange-400 hover:bg-orange-300 text-black font-bold py-3 px-4 rounded-lg shadow-lg mt-6 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-            >
-              Verify Otp
-            </button>
-
-            <button
-              type="button"
-              onClick={handleResendCode}
-              className="w-full mt-2 text-orange-400 font-bold underline"
-            >
-              Resend OTP
-            </button>
-          </form>
-        </div>
+          <button
+            type="button"
+            onClick={handleResendCode}
+            className="w-full text-sm font-semibold text-accent hover:text-accent-hover"
+          >
+            Resend code
+          </button>
+        </form>
       </div>
     </div>
   );

@@ -1,0 +1,116 @@
+:root[data-theme="default"] {
+  --bg: 14 12 10; /* deep charcoal */
+  --surface: 26 22 18; /* warm ash */
+  --border: 44 38 32;
+
+  --text-primary: 248 244 240;
+  --text-secondary: 185 174 160;
+  --text-muted: 140 128 114;
+
+  --accent: 251 146 60; /* ember orange */
+  --accent-hover: 253 186 116;
+}
+
+:root[data-theme="pine-smoke"] {
+  --bg: 12 18 16;
+  --surface: 20 28 26;
+  --border: 36 48 44;
+
+  --text-primary: 232 240 236;
+  --text-secondary: 170 190 182;
+  --text-muted: 128 150 142;
+
+  --accent: 52 211 153; /* soft green */
+  --accent-hover: 110 231 183;
+}
+
+:root[data-theme="midnight-ash"] {
+  --bg: 8 9 11;
+  --surface: 16 17 21;
+  --border: 32 34 40;
+
+  --text-primary: 235 235 240;
+  --text-secondary: 160 162 175;
+  --text-muted: 115 118 135;
+
+  --accent: 96 165 250; /* cool blue ember */
+  --accent-hover: 147 197 253;
+}
+
+:root[data-theme="bonfire-glow"] {
+  --bg: 18 10 8;
+  --surface: 30 16 12;
+  --border: 56 28 20;
+
+  --text-primary: 255 245 240;
+  --text-secondary: 220 180 170;
+  --text-muted: 170 130 120;
+
+  --accent: 244 63 94; /* hot pink-red flame */
+  --accent-hover: 251 113 133;
+}
+
+:root[data-theme="dawn-camp"] {
+  --bg: 252 248 243;
+  --surface: 255 252 248;
+  --border: 226 220 212;
+
+  --text-primary: 64 59 54;
+  --text-secondary: 120 112 104;
+  --text-muted: 160 150 140;
+
+  --accent: 234 88 12; /* sunrise orange */
+  --accent-hover: 249 115 22;
+}
+
+:root[data-theme="coal-black"] {
+  --bg: 0 0 0;
+  --surface: 10 10 10;
+  --border: 28 28 28;
+
+  --text-primary: 245 245 245;
+  --text-secondary: 170 170 170;
+  --text-muted: 120 120 120;
+
+  --accent: 250 204 21; /* gold ember */
+  --accent-hover: 253 224 71;
+}
+
+:root[data-theme="github-dark"] {
+  --bg: 13 17 23; /* #0d1117 */
+  --surface: 22 27 34; /* #161b22 */
+  --border: 48 54 61;
+
+  --text-primary: 201 209 217;
+  --text-secondary: 139 148 158;
+  --text-muted: 110 118 129;
+
+  --accent: 88 166 255; /* GitHub blue */
+  --accent-hover: 120 186 255;
+}
+
+:root[data-theme="catppuccin-dark"] {
+  --bg: 30 30 46; /* base */
+  --surface: 49 50 68; /* surface0 */
+  --border: 69 71 90;
+
+  --text-primary: 205 214 244;
+  --text-secondary: 166 173 200;
+  --text-muted: 147 153 178;
+
+  --accent: 245 194 231; /* pink */
+  --accent-hover: 243 139 168;
+}
+
+:root[data-theme="rosepine-light"] {
+  --bg: 250 244 237;
+  --surface: 255 250 243;
+  --border: 224 222 215;
+
+  --text-primary: 87 82 121;
+  --text-secondary: 121 117 147;
+  --text-muted: 160 156 179;
+
+  --accent: 180 99 122;
+  --accent-hover: 196 116 138;
+}

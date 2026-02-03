@@ -1,15 +1,37 @@
 import { FiEdit2, FiTrash2, FiCheck, FiX } from "react-icons/fi";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const MessageBubble = ({ message, isMine, onEdit, onDelete }) => {
-  const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedText, setEditedText] = useState(message.content);
 
-  const handleSave = () => {
+  const menuRef = useRef(null);
+
+  // Close menu on outside click
+  useEffect(() => {
+    const handleOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, []);
+
+  const startEdit = () => {
+    setMenuOpen(false);
+    setIsEditing(true);
+  };
+
+  const cancelEdit = () => {
+    setIsEditing(false);
+    setEditedText(message.content);
+  };
+
+  const saveEdit = () => {
     if (!editedText.trim() || editedText === message.content) {
-      setIsEditing(false);
-      setEditedText(message.content);
+      cancelEdit();
       return;
     }
     onEdit({ ...message, content: editedText });
@@ -18,44 +40,51 @@ const MessageBubble = ({ message, isMine, onEdit, onDelete }) => {
 
   return (
     <div
-      className={`relative group w-fit max-w-[85%] sm:max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed cursor-pointer
+      className={`relative group w-fit max-w-[85%] sm:max-w-[75%]
+        rounded-2xl px-4 py-3 text-sm leading-relaxed
         ${
           isMine
-            ? "ml-auto bg-orange-400 text-black rounded-br-md"
-            : "mr-auto bg-[#151518] border border-[#232326] text-white rounded-bl-md"
+            ? "ml-auto bg-accent text-bg rounded-br-md"
+            : "mr-auto bg-surface border border-border text-text-primary rounded-bl-md"
         }
       `}
-      onClick={() => !isEditing && setOpen(!open)} // only toggle dropdown if not editing
     >
+      {/* Username (only for others) */}
       {!isMine && (
-        <div className="mb-1 text-[11px] font-medium text-orange-300">
+        <div className="mb-1 text-[11px] font-medium text-text-secondary">
           @{message.userId?.username || "unknown"}
         </div>
       )}
 
-      {/* Message content or inline edit */}
+      {/* Message content / edit mode */}
       {isEditing ? (
-        <div className="flex gap-2 items-center">
-          <input
-            type="text"
+        <div className="flex items-end gap-2">
+          <textarea
             value={editedText}
             onChange={(e) => setEditedText(e.target.value)}
-            className="flex-1 rounded-md bg-[#232326] px-2 py-2 text-sm text-white outline-none"
+            rows={2}
+            autoFocus
+            className="flex-1 resize-none rounded-lg bg-bg border border-border
+                       px-2 py-2 text-sm text-text-primary outline-none
+                       focus:border-accent"
           />
+
           <button
-            onClick={handleSave}
-            className="text-black border border-[#232326] rounded-full hover:bg-[#151518] hover:text-orange-400 p-1"
+            onClick={saveEdit}
+            className="p-1 rounded-full border border-border
+                       text-text-primary hover:bg-surface transition"
+            aria-label="Save edit"
           >
-            <FiCheck size={20} />
+            <FiCheck size={18} />
           </button>
+
           <button
-            onClick={() => {
-              setIsEditing(false);
-              setEditedText(message.content);
-            }}
-            className="text-black border border-[#232326] rounded-full hover:bg-[#151518] hover:text-orange-400 p-1"
+            onClick={cancelEdit}
+            className="p-1 rounded-full border border-border
+                       text-text-secondary hover:bg-surface transition"
+            aria-label="Cancel edit"
           >
-            <FiX size={20} />
+            <FiX size={18} />
           </button>
         </div>
       ) : (
@@ -64,15 +93,30 @@ const MessageBubble = ({ message, isMine, onEdit, onDelete }) => {
         </p>
       )}
 
-      {/* Dropdown for Edit/Delete */}
-      {isMine && !isEditing && open && (
-        <div className="absolute top-full right-0 mt-1 w-36 rounded-lg bg-[#1f1f23] border border-[#2a2a2f] shadow-lg z-20">
+      {/* Action trigger (explicit, not on bubble tap) */}
+      {isMine && !isEditing && (
+        <button
+          onClick={() => setMenuOpen((o) => !o)}
+          className="absolute top-1 right-1 opacity-0 group-hover:opacity-100
+                     text-text-muted hover:text-text-primary transition"
+          aria-label="Message actions"
+        >
+          ⋯
+        </button>
+      )}
+
+      {/* Action menu */}
+      {isMine && menuOpen && !isEditing && (
+        <div
+          ref={menuRef}
+          onClick={(e) => e.stopPropagation()}
+          className="absolute top-full right-0 mt-1 w-36
+                     rounded-xl bg-surface border border-border shadow-lg z-20"
+        >
           <button
-            onClick={() => {
-              setOpen(false);
-              setIsEditing(true); // inline edit activated
-            }}
-            className="flex w-full items-center gap-2 px-3 py-2 text-sm font-semibold text-white hover:bg-orange-400 hover:text-black rounded-t-lg transition"
+            onClick={startEdit}
+            className="flex w-full items-center gap-2 px-3 py-2 text-sm
+                       text-text-primary hover:bg-bg rounded-t-xl transition"
           >
             <FiEdit2 size={14} />
             Edit
@@ -80,10 +124,11 @@ const MessageBubble = ({ message, isMine, onEdit, onDelete }) => {
 
           <button
             onClick={() => {
-              setOpen(false);
+              setMenuOpen(false);
               onDelete(message._id);
             }}
-            className="flex w-full items-center gap-2 px-3 py-2 text-sm font-semibold text-white hover:bg-orange-400 hover:text-black rounded-b-lg transition"
+            className="flex w-full items-center gap-2 px-3 py-2 text-sm
+                       text-text-primary hover:bg-bg rounded-b-xl transition"
           >
             <FiTrash2 size={14} />
             Delete

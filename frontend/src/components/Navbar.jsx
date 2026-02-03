@@ -1,93 +1,158 @@
-import React, { useContext, useState } from "react";
-import { IoMenu } from "react-icons/io5";
+import { useContext, useState } from "react";
+import { IoMenu, IoClose, IoLogIn, IoPersonAdd } from "react-icons/io5";
 import { Link } from "react-router-dom";
-import { IoClose } from "react-icons/io5";
 import { AuthContext } from "../context/authContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-
   const { isLogin } = useContext(AuthContext);
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
   return (
-    <nav className="border-b border-[#1f1f23]">
-      <div className="px-4 sm:px-6 font-serif m-2">
-        <div className="flex justify-between items-center">
-          {/* Logo/Site Heading */}
-          <div className="flex-shrink-0">
-            <Link
-              to="/"
-              className="text-white text-2xl font-bold"
-              aria-label="CampFire Home"
-            >
-              Camp<span className="text-orange-400 font-bold">Fire</span>
-            </Link>
-          </div>
+    <>
+      {/* TOP NAVBAR */}
+      <nav
+        className="
+          sticky top-0 z-40
+          bg-bg/80 backdrop-blur-md
+          border-b border-border
+        "
+      >
+        <div className="px-4 sm:px-6 h-14 flex items-center justify-between">
+          {/* Logo */}
+          <Link to="/" className="text-xl font-extrabold tracking-tight">
+            <span className="text-text-primary">Camp</span>
+            <span className="text-accent">Fire</span>
+          </Link>
 
-          {/* Desktop Menu - Buttons on the right */}
-          <div className="hidden md:flex items-center gap-4">
-            {!isLogin && (
-              <>
-                <Link
-                  to="/login"
-                  className="px-3 py-2 bg-orange-400 text-black font-bold rounded-lg hover:bg-orange-400 transition-all duration-200"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/signup"
-                  className="px-3 py-2 bg-orange-400 text-black font-bold rounded-lg hover:bg-orange-400 transition-all duration-200"
-                >
-                  Signup
-                </Link>
-              </>
-            )}
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={toggleMenu}
-            className="md:hidden inline-flex items-center justify-center p-2 pl-14 rounded-md text-white"
-            aria-expanded={isOpen}
-            aria-label="Toggle navigation menu"
-          >
-            {isOpen ? (
-              <IoClose className="h-6 w-6" aria-hidden="true" />
-            ) : (
-              <IoMenu className="h-6 w-6" aria-hidden="true" />
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Menu - Dropdown */}
-      {isOpen && (
-        <div className="absolute top-10 right-14 rounded-md md:hidden bg-orange-400 shadow-md">
+          {/* Desktop actions */}
           {!isLogin && (
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <div className="hidden md:flex items-center gap-3">
               <Link
                 to="/login"
-                className="text-white hover:bg-blue-400 block px-3 py-2 rounded-md text-base font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 focus:ring-offset-blue-500"
-                onClick={() => setIsOpen(false)}
+                className="
+                  px-4 py-2 rounded-xl
+                  border border-border
+                  text-text-primary
+                  hover:bg-surface
+                  transition-all
+                "
               >
                 Login
               </Link>
               <Link
                 to="/signup"
-                className="text-white hover:bg-blue-400 block px-3 py-2 rounded-md text-base font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 focus:ring-offset-blue-500"
-                onClick={() => setIsOpen(false)}
+                className="
+                  px-4 py-2 rounded-xl
+                  bg-accent hover:bg-accent-hover
+                  text-black font-semibold
+                  transition-all
+                "
               >
-                Signup
+                Sign up
+              </Link>
+            </div>
+          )}
+
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setIsOpen(true)}
+            className="
+              md:hidden
+              p-2 rounded-xl
+              border border-border
+              text-text-primary
+              hover:bg-surface
+              transition
+            "
+            aria-label="Open menu"
+          >
+            <IoMenu size={22} />
+          </button>
+        </div>
+      </nav>
+
+      {/* MOBILE OVERLAY */}
+      <div
+        className={`
+          fixed inset-0 z-50 md:hidden
+          transition-all duration-300
+          ${isOpen ? "visible" : "invisible"}
+        `}
+      >
+        {/* Backdrop */}
+        <div
+          className={`
+            absolute inset-0 bg-black/50
+            transition-opacity duration-300
+            ${isOpen ? "opacity-100" : "opacity-0"}
+          `}
+          onClick={() => setIsOpen(false)}
+        />
+
+        {/* Bottom Sheet */}
+        <div
+          className={`
+            absolute bottom-0 left-0 right-0
+            bg-surface border-t border-border
+            rounded-t-3xl
+            p-6
+            transition-transform duration-300
+            ${isOpen ? "translate-y-0" : "translate-y-full"}
+          `}
+        >
+          {/* Handle */}
+          <div className="w-12 h-1.5 bg-border rounded-full mx-auto mb-6" />
+
+          {/* Close */}
+          <button
+            onClick={() => setIsOpen(false)}
+            className="
+              absolute top-4 right-4
+              p-2 rounded-full
+              hover:bg-bg
+              transition
+            "
+          >
+            <IoClose size={22} />
+          </button>
+
+          {!isLogin && (
+            <div className="space-y-4">
+              <Link
+                to="/login"
+                onClick={() => setIsOpen(false)}
+                className="
+                  flex items-center gap-3
+                  w-full px-4 py-3 rounded-2xl
+                  border border-border
+                  text-text-primary
+                  hover:bg-bg
+                  transition
+                "
+              >
+                <IoLogIn size={20} />
+                <span className="font-semibold">Login</span>
+              </Link>
+
+              <Link
+                to="/signup"
+                onClick={() => setIsOpen(false)}
+                className="
+                  flex items-center gap-3
+                  w-full px-4 py-3 rounded-2xl
+                  bg-accent hover:bg-accent-hover
+                  text-black font-semibold
+                  transition
+                "
+              >
+                <IoPersonAdd size={20} />
+                <span>Create account</span>
               </Link>
             </div>
           )}
         </div>
-      )}
-    </nav>
+      </div>
+    </>
   );
 };
 

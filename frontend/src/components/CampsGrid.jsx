@@ -8,33 +8,29 @@ const CampsGrid = ({ camps }) => {
   const navigate = useNavigate();
   const { joinCamps, setJoinCamps, setYourCamps } = useContext(CampContext);
 
-  const handleJoinCamp = async (id) => {
+  const handleJoinCamp = async (id, e) => {
+    e.stopPropagation();
+
     try {
       const response = await fetch(
         `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/join/${id}`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(),
           credentials: "include",
         },
       );
+
       const result = await response.json();
       if (result.success) {
         handleSuccess(result.message);
 
         const joinedCamp = camps.find((camp) => camp._id === id);
-
         if (joinedCamp) {
           setJoinCamps((prev) => [...prev, joinedCamp]);
           setYourCamps((prev) => [...prev, joinedCamp]);
-        } else {
-          return;
         }
 
-        setTimeout(() => navigate("/your-camps"), 2000);
+        navigate("/your-camps");
       } else {
         handleError(result.message);
       }
@@ -46,55 +42,78 @@ const CampsGrid = ({ camps }) => {
   const isJoined = (campId) => joinCamps?.some((c) => c._id === campId);
 
   return (
-    <div>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:m-2">
-        {camps.map((camp) => (
-          <div
-            key={camp._id}
-            onClick={() => {
-              navigate(`/camp-feed/${camp._id}`);
-            }}
-            className="bg-[#111113] border border-[#1f1f23] rounded-2xl p-4 hover:border-orange-500 cursor-pointer"
-          >
-            <div className="flex flex-wrap gap-2 mb-5">
-              {camp.category.map((cat, i) => (
-                <span
-                  key={i}
-                  className="px-4 py-2 text-xs rounded-full bg-[#18181b] border border-[#27272a] text-gray-300"
-                >
-                  {cat}
-                </span>
-              ))}
-            </div>
-
-            <h3 className="text-white text-xl font-semibold">{camp.title}</h3>
-            <p className="text-md text-gray-400 line-clamp-2 mt-1">
-              {camp.description}
-            </p>
-
-            <div className="mt-4 flex items-center justify-between">
-              <div className="flex items-center gap-2 text-xs text-gray-400">
-                <FaUserGroup />
-                <span>{camp.totalUsers}</span>
-              </div>
-
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (!isJoined(camp._id)) {
-                    handleJoinCamp(camp._id);
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 px-1 sm:px-2">
+      {camps.map((camp) => (
+        <div
+          key={camp._id}
+          onClick={() => navigate(`/camp-feed/${camp._id}`)}
+          className="
+            cursor-pointer
+            bg-surface border border-border
+            rounded-2xl p-4
+            transition
+            hover:border-accent
+          "
+        >
+          <div className="flex flex-wrap gap-2 mb-4">
+            {camp.category.map((cat, i) => (
+              <span
+                key={i}
+                className={`
+                  px-3 py-1.5 text-xs font-semibold rounded-full
+                  ${
+                    i % 4 === 0
+                      ? "bg-blue-500/15 text-blue-400"
+                      : i % 4 === 1
+                        ? "bg-green-500/15 text-green-400"
+                        : i % 4 === 2
+                          ? "bg-purple-500/15 text-purple-400"
+                          : "bg-orange-500/15 text-orange-400"
                   }
-                }}
-                className={`px-4 py-1.5 text-sm rounded-lg font-bold bg-orange-400 text-black transition shrink-0
-                 ${isJoined(camp._id) ? "cursor-not-allowed" : "hover:bg-orange-500"}
-               `}
+                `}
               >
-                {isJoined(camp._id) ? "Joined" : "Join"}
-              </button>
-            </div>
+                {cat}
+              </span>
+            ))}
           </div>
-        ))}
-      </div>
+
+          <h3 className="text-lg font-semibold text-text-primary leading-snug">
+            {camp.title}
+          </h3>
+
+          <p className="mt-1 text-sm text-text-secondary line-clamp-2">
+            {camp.description}
+          </p>
+
+          <div className="mt-4 flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm text-text-muted">
+              <FaUserGroup />
+              <span>{camp.totalUsers}</span>
+            </div>
+
+            <button
+              onClick={(e) => {
+                if (!isJoined(camp._id)) {
+                  handleJoinCamp(camp._id, e);
+                } else {
+                  e.stopPropagation();
+                }
+              }}
+              className={`
+                px-4 py-1.5 rounded-full text-sm font-semibold
+                transition
+                ${
+                  isJoined(camp._id)
+                    ? "bg-surface text-text-muted border border-border cursor-not-allowed"
+                    : "bg-accent hover:bg-accent-hover text-black"
+                }
+              `}
+            >
+              {isJoined(camp._id) ? "Joined" : "Join"}
+            </button>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };

@@ -10,7 +10,6 @@ const PostCard = ({ post, campId }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(post.content);
   const { loading, setLoading } = useContext(AuthContext);
-
   const { posts, setPosts } = useContext(CampContext);
 
   const handleEditPost = async () => {
@@ -25,12 +24,8 @@ const PostCard = ({ post, campId }) => {
         `${import.meta.env.VITE_BACKNED_URL}/api/v1/post/edit/${post._id}`,
         {
           method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            content: editedContent,
-          }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: editedContent }),
           credentials: "include",
         },
       );
@@ -79,114 +74,108 @@ const PostCard = ({ post, campId }) => {
   };
 
   return (
-    <>
-      <article className="w-full max-w-full sm:max-w-xl md:max-w-2xl xl:max-w-3xl bg-[#0f0f11] border border-[#1f1f23] rounded-lg p-3 sm:p-4 md:p-5 mx-auto">
-        <div className="flex items-start justify-between gap-3 mb-3">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-orange-400 text-black flex items-center justify-center font-semibold shrink-0">
-              {post.userId?.name?.[0]}
-            </div>
-
-            <div className="min-w-0">
-              <p className="font-semibold leading-tight truncate">
-                {post.userId?.name}
-              </p>
-              <p className="text-sm text-[#a3a3a3] truncate">
-                @{post.userId?.username}
-              </p>
-            </div>
+    <article className="bg-surface border border-border rounded-2xl px-4 py-4 sm:px-5">
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-10 h-10 rounded-full bg-accent text-black flex items-center justify-center font-semibold shrink-0">
+            {post.userId?.name?.[0]}
           </div>
 
-          <div className="relative">
-            <button
-              onClick={() => setActive(!active)}
-              className="p-2 rounded-full hover:bg-[#18181b] shrink-0"
-            >
-              <FiMoreHorizontal />
-            </button>
-            {active && (
-              <div className="absolute right-0 mt-2 w-40 bg-[#1f1f23] rounded-md shadow-lg z-50">
-                <div className="px-2 py-2 space-y-1">
-                  <button
-                    onClick={() => {
-                      setActive(false);
-                      setIsEditing(!isEditing);
-                    }}
-                    disabled={loading}
-                    className={`text-white w-full hover:bg-orange-400 hover:text-black block px-3 py-2 rounded-md text-base font-medium ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-                  >
-                    Edit Post
-                  </button>
-                  <button
-                    onClick={handleDeletePost}
-                    disabled={loading}
-                    className={`text-white w-full hover:bg-orange-400 hover:text-black block px-3 py-2 rounded-md text-base font-medium ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-                  >
-                    Delete Post
-                  </button>
-                </div>
-              </div>
-            )}
+          <div className="min-w-0">
+            <p className="font-semibold text-text-primary truncate">
+              {post.userId?.name}
+            </p>
+            <p className="text-sm text-text-muted truncate">
+              @{post.userId?.username}
+            </p>
           </div>
         </div>
 
-        {isEditing ? (
-          <div className="mb-3 space-y-2">
-            <textarea
-              value={editedContent}
-              onChange={(e) => setEditedContent(e.target.value)}
-              rows={3}
-              className="w-full resize-none rounded-lg outline-none bg-[#18181b] border border-[#1f1f23] p-3 text-sm"
-            />
+        <div className="relative">
+          <button
+            onClick={() => setActive((v) => !v)}
+            className="p-2 rounded-full hover:bg-bg transition"
+          >
+            <FiMoreHorizontal />
+          </button>
 
-            <div className="flex gap-2 justify-end">
+          {active && (
+            <div className="absolute right-0 mt-2 w-36 bg-bg border border-border rounded-xl shadow-lg z-50">
               <button
                 onClick={() => {
-                  setIsEditing(false);
-                  setEditedContent(post.content);
+                  setIsEditing(true);
+                  setActive(false);
                 }}
-                className="px-4 py-1.5 rounded-lg bg-gray-600 text-white text-sm"
-              >
-                Cancel
-              </button>
-
-              <button
-                onClick={handleEditPost}
                 disabled={loading}
-                className="px-4 py-1.5 rounded-lg bg-orange-400 text-black text-sm font-semibold hover:bg-orange-500 disabled:opacity-50"
+                className="w-full px-4 py-2 text-left text-sm hover:bg-surface transition rounded-t-xl"
               >
-                Save
+                Edit
+              </button>
+              <button
+                onClick={handleDeletePost}
+                disabled={loading}
+                className="w-full px-4 py-2 text-left text-sm hover:bg-surface transition rounded-b-xl"
+              >
+                Delete
               </button>
             </div>
-          </div>
-        ) : (
-          <p className="text-sm sm:text-[15px] leading-relaxed mb-3 whitespace-pre-wrap break-words">
-            {post.content}
-          </p>
-        )}
+          )}
+        </div>
+      </div>
 
-        {post.images?.length > 0 && (
+      {isEditing ? (
+        <div className="space-y-3 mb-3">
+          <textarea
+            value={editedContent}
+            onChange={(e) => setEditedContent(e.target.value)}
+            rows={3}
+            className="w-full resize-none rounded-xl bg-bg border border-border p-3 text-sm outline-none"
+          />
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => {
+                setIsEditing(false);
+                setEditedContent(post.content);
+              }}
+              className="px-4 py-2 rounded-xl border border-border text-text-primary"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleEditPost}
+              disabled={loading}
+              className="px-4 py-2 rounded-xl bg-accent text-black font-semibold disabled:opacity-50"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      ) : (
+        <p className="text-sm sm:text-[15px] leading-relaxed mb-3 whitespace-pre-wrap break-words text-text-primary">
+          {post.content}
+        </p>
+      )}
+
+      {post.images?.length > 0 && (
+        <div className="mt-2 mb-4">
           <img
             src={post.images[0].url}
             alt="post"
-            className="w-full md:max-w-96 mx-auto max-h-64 sm:max-h-64 md:max-h-80 object-center rounded-lg mb-5"
+            className="w-full max-h-80 object-cover rounded-xl"
           />
-        )}
-
-        <div className="flex justify-between text-sm text-[#a3a3a3]">
-          {new Date(post.createdAt).toLocaleString()}
-
-          <div>
-            <button
-              onClick={() => navigate(`/camp-feed/${campId}/post/${post._id}`)}
-              className="w-full flex items-center justify-between text-[#a3a3a3] hover:text-white transition"
-            >
-              Open discussion
-            </button>
-          </div>
         </div>
-      </article>
-    </>
+      )}
+
+      <div className="flex items-center justify-between text-xs sm:text-sm text-text-muted">
+        <span>{new Date(post.createdAt).toLocaleString()}</span>
+        <button
+          onClick={() => navigate(`/camp-feed/${campId}/post/${post._id}`)}
+          className="hover:text-text-primary transition"
+        >
+          Open discussion
+        </button>
+      </div>
+    </article>
   );
 };
 

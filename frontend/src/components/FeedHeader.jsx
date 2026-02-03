@@ -4,9 +4,23 @@ import { handleError, handleSuccess } from "../notify/Notification";
 import { FaUserGroup } from "react-icons/fa6";
 import { useParams } from "react-router-dom";
 
+const formatRemainingTime = (burnIn) => {
+  if (!burnIn) return null;
+
+  const diff = burnIn - Date.now();
+  if (diff <= 0) return "Expired";
+
+  const minutes = Math.floor(diff / 60000);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (days > 0) return `${days}d ${hours % 24}h`;
+  if (hours > 0) return `${hours}h`;
+  return `${minutes}m`;
+};
+
 const FeedHeader = () => {
   const { id } = useParams();
-
   const { setLoading } = useContext(AuthContext);
   const { camp, setCamp, setPosts, joinCamps, setJoinCamps, setYourCamps } =
     useContext(CampContext);
@@ -38,28 +52,22 @@ const FeedHeader = () => {
     fetchGetCamps();
   }, [id, setLoading, setCamp, setPosts]);
 
-  const handleJoinCamp = async (id) => {
+  const handleJoinCamp = async (campId) => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/join/${id}`,
+        `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/join/${campId}`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(),
+          headers: { "Content-Type": "application/json" },
           credentials: "include",
         },
       );
       const result = await response.json();
+
       if (result.success) {
         handleSuccess(result.message);
-        const normalizedCamp = {
-          ...camp,
-        };
-
-        setJoinCamps((prev) => [...prev, normalizedCamp]);
-        setYourCamps((prev) => [...prev, normalizedCamp]);
+        setJoinCamps((prev) => [...prev, camp]);
+        setYourCamps((prev) => [...prev, camp]);
       } else {
         handleError(result.message);
       }
@@ -68,42 +76,79 @@ const FeedHeader = () => {
     }
   };
 
-  const isJoined = (campId) =>
-    Array.isArray(joinCamps) && joinCamps.some((c) => c._id === campId);
+  const isJoined =
+    Array.isArray(joinCamps) && joinCamps.some((c) => c._id === camp?._id);
+
+  const remainingTime = formatRemainingTime(camp?.burnAt);
+
   return (
-    <header className="sticky top-0 z-20 bg-[#111113] border border-[#1f1f23] mt-2 mb-2 px-4 py-4 md:px-6 rounded-lg">
-      <div className="mx-auto flex flex-row sm:flex-row items-start md:items-center justify-between gap-2 md:gap-4">
-        <div className="min-w-0">
-          <h1 className="text-white text-lg sm:text-2xl font-semibold mb-2">
-            {camp?.title}
-          </h1>
-          <p className="text-gray-400 text-sm mt-1 line-clamp-2 mb-2">
-            {camp?.description}
-          </p>
-          <p className="flex gap-1 text-[#a3a3a3] text-md">
-            <FaUserGroup size={14} className="mt-1.5" />
-            <span>
+    <section className="bg-bg">
+      <div className="max-w-3xl mx-auto px-4 pt-6 pb-5">
+        <div className="flex flex-col gap-4">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <h1 className="text-2xl sm:text-3xl font-bold text-text-primary leading-tight">
+                {camp?.title}
+              </h1>
+
+              {camp?.description && (
+                <p className="mt-2 text-sm sm:text-base text-text-secondary line-clamp-2">
+                  {camp.description}
+                </p>
+              )}
+            </div>
+
+            <button
+              onClick={() => {
+                if (!isJoined && camp?._id) handleJoinCamp(camp._id);
+              }}
+              disabled={isJoined || remainingTime === "Expired"}
+              className={`
+                shrink-0 h-10 px-5 rounded-full text-sm font-semibold
+                transition
+                ${
+                  isJoined
+                    ? "bg-surface text-text-muted border border-border cursor-not-allowed"
+                    : remainingTime === "Expired"
+                      ? "bg-surface text-text-muted border border-border cursor-not-allowed"
+                      : "bg-accent hover:bg-accent-hover text-black"
+                }
+              `}
+            >
+              {remainingTime === "Expired"
+                ? "Expired"
+                : isJoined
+                  ? "Joined"
+                  : "Join"}
+            </button>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-4 text-sm">
+            <span className="flex items-center gap-1 text-text-muted">
+              <FaUserGroup size={14} />
               {camp?.totalUsers} member{camp?.totalUsers > 1 ? "s" : ""}
             </span>
-          </p>
-        </div>
 
-        <div className="flex-shrink-0 mt-2 md:mt-0">
-          <button
-            onClick={() => {
-              if (!isJoined(camp._id)) {
-                handleJoinCamp(camp._id);
-              }
-            }}
-            className={`px-4 py-1.5 text-sm rounded-lg font-bold bg-orange-400 text-black transition shrink-0
-                 ${isJoined(camp?._id) ? "cursor-not-allowed" : "hover:bg-orange-500"}
-               `}
-          >
-            {isJoined(camp?._id) ? "Joined" : "Join"}
-          </button>
+            {remainingTime && (
+              <span
+                className={`
+                  px-3 py-1 rounded-full text-xs font-semibold
+                  ${
+                    remainingTime === "Expired"
+                      ? "bg-red-500/15 text-red-400"
+                      : "bg-accent/15 text-accent"
+                  }
+                `}
+              >
+                {remainingTime === "Expired"
+                  ? "Camp expired"
+                  : `Ends in ${remainingTime}`}
+              </span>
+            )}
+          </div>
         </div>
       </div>
-    </header>
+    </section>
   );
 };
 

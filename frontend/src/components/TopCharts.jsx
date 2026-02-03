@@ -1,10 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext, CampContext } from "../context/authContext";
 import { handleError } from "../notify/Notification";
 import CampsGrid from "./CampsGrid";
 import Loader from "./Loader";
+import { HiMiniArrowTrendingUp } from "react-icons/hi2";
+import { FaTrophy } from "react-icons/fa6";
+
 const TopCharts = () => {
-  const { setLoading, loading } = useContext(AuthContext);
+  const { loading, setLoading } = useContext(AuthContext);
   const { trendingCamps, setTrendingCamps, topCamps, setTopCamps } =
     useContext(CampContext);
 
@@ -15,17 +18,21 @@ const TopCharts = () => {
       try {
         setLoading(true);
 
-        const url =
+        const endpoint =
           activeTab === "trending"
-            ? `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/trending`
-            : `${import.meta.env.VITE_BACKNED_URL}/api/v1/camp/top`;
+            ? "/api/v1/camp/trending"
+            : "/api/v1/camp/top";
 
-        const response = await fetch(url, {
-          method: "GET",
-          credentials: "include",
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_BACKNED_URL}${endpoint}`,
+          {
+            method: "GET",
+            credentials: "include",
+          },
+        );
 
         const result = await response.json();
+
         if (activeTab === "trending") {
           setTrendingCamps(result.data.camps);
         } else {
@@ -39,63 +46,79 @@ const TopCharts = () => {
     };
 
     if (
-      (activeTab === "trending" && trendingCamps.length) ||
-      (activeTab === "top" && topCamps.length)
-    )
+      (activeTab === "trending" && trendingCamps.length > 0) ||
+      (activeTab === "top" && topCamps.length > 0)
+    ) {
       return;
+    }
 
     fetchCamps();
   }, [
     activeTab,
     setLoading,
-    setTopCamps,
     setTrendingCamps,
-    topCamps.length,
+    setTopCamps,
     trendingCamps.length,
+    topCamps.length,
   ]);
 
-  if (loading) {
-    return <Loader />;
-  }
+  if (loading) return <Loader />;
 
-  if (!trendingCamps || trendingCamps.length === 0) {
-    return (
-      <div className="p-4 sm:p-5 rounded-xl bg-[#111113] border border-[#1f1f23] text-[#a3a3a3]">
-        <h2 className="text-base sm:text-lg font-semibold text-white">
-          No Trending Camps Yet
-        </h2>
-      </div>
-    );
-  }
+  const emptyState =
+    activeTab === "trending" ? "No trending camps yet" : "No top camps yet";
 
   return (
     <>
-      <div className="flex gap-2 mb-5 p-2">
+      <div className="flex gap-2 mb-6 px-2">
         <button
-          onClick={() =>
-            setActiveTab((prev) => (prev === "trending" ? "top" : "trending"))
-          }
-          className={`px-4 py-2 text-sm font-bold rounded-2xl transition bg-[#18181b] border border-[#27272a]
+          onClick={() => setActiveTab("trending")}
+          className={`
+            flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition
             ${
               activeTab === "trending"
-                ? "bg-orange-400 text-black"
-                : "bg-orange-400 text-black"
-            }`}
+                ? "bg-accent text-black"
+                : "bg-bg border border-border text-text-muted hover:text-text-primary"
+            }
+          `}
         >
-          {activeTab === "trending" ? "🔥 Trending" : "🏆 Top"}
+          <HiMiniArrowTrendingUp className="text-base" />
+          Trending
+        </button>
+
+        <button
+          onClick={() => setActiveTab("top")}
+          className={`
+            flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition
+            ${
+              activeTab === "top"
+                ? "bg-accent text-black"
+                : "bg-bg border border-border text-text-muted hover:text-text-primary"
+            }
+          `}
+        >
+          <FaTrophy className="text-sm" />
+          Top
         </button>
       </div>
 
-      {activeTab === "trending" && (
-        <section>
-          <CampsGrid camps={trendingCamps} />
-        </section>
+      {activeTab === "trending" && trendingCamps.length === 0 && (
+        <div className="p-5 rounded-2xl bg-surface border border-border text-text-secondary">
+          {emptyState}
+        </div>
       )}
 
-      {activeTab === "top" && (
-        <section>
-          <CampsGrid camps={topCamps} />
-        </section>
+      {activeTab === "top" && topCamps.length === 0 && (
+        <div className="p-5 rounded-2xl bg-surface border border-border text-text-secondary">
+          {emptyState}
+        </div>
+      )}
+
+      {activeTab === "trending" && trendingCamps.length > 0 && (
+        <CampsGrid camps={trendingCamps} />
+      )}
+
+      {activeTab === "top" && topCamps.length > 0 && (
+        <CampsGrid camps={topCamps} />
       )}
     </>
   );

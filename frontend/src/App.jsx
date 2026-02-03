@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
+
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -21,9 +23,16 @@ import CampFeed from "./pages/CampFeed";
 import DiscussionPage from "./pages/DiscussionPage";
 
 const App = () => {
+  useEffect(() => {
+    const theme = localStorage.getItem("theme") || "default";
+    document.documentElement.setAttribute("data-theme", theme);
+  }, []);
+
   return (
-    <>
+    <div className="min-h-screen bg-bg text-text-primary transition-colors duration-300">
+      {/* Global Navbar */}
       <Navbar />
+
       <Routes>
         {/* public routes */}
         <Route path="/login" element={<Login />} />
@@ -42,11 +51,11 @@ const App = () => {
             <Route path="settings" element={<Settings />} />
 
             <Route path="camp-feed/:id" element={<CampFeed />} />
-
             <Route
               path="camp-feed/:id/post/:postId"
               element={<DiscussionPage />}
             />
+
             <Route path="settings/account" element={<AccountProfile />} />
             <Route path="settings/privacy" element={<SecurityPrivacy />} />
             <Route path="settings/add-interest" element={<AddInterests />} />
@@ -56,7 +65,7 @@ const App = () => {
       </Routes>
 
       <ToastContainer />
-    </>
+    </div>
   );
 };
 

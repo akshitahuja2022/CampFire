@@ -8,31 +8,29 @@ import { CampContext } from "../context/authContext";
 
 const CampFeed = () => {
   const { id } = useParams();
-
   const { posts } = useContext(CampContext);
 
   return (
-    <main className="min-h-screen w-full flex flex-col items-center pb-32">
-      <div className="w-full max-w-full sm:max-w-xl md:max-w-2xl xl:max-w-3xl">
+    <div className="w-full flex flex-col items-center">
+      <div className="w-full max-w-3xl px-2 sm:px-0">
         <FeedHeader />
       </div>
 
-      <div className="flex flex-col gap-2 w-full max-w-full sm:max-w-xl md:max-w-2xl xl:max-w-3xl">
+      <div className="w-full max-w-3xl flex flex-col gap-3 px-2 sm:px-0 pb-24">
         {posts.length === 0 ? (
-          <p className="text-center text-[#a3a3a3] mt-10">
+          <p className="text-center text-text-muted mt-10">
             No posts yet. Be the first one 👀
           </p>
         ) : (
           posts.map((post) => (
-            <PostCard campId={id} key={post._id} post={post} />
+            <PostCard key={post._id} campId={id} post={post} />
           ))
         )}
       </div>
 
       <FloatingCreateButton />
-
       <CreatePostModal id={id} />
-    </main>
+    </div>
   );
 };
 

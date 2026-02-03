@@ -115,19 +115,20 @@ const DiscussionPage = () => {
 
   return (
     <>
-      <main className="min-h-screen w-full flex flex-col items-center pb-32">
-        <article className="mx-auto w-full max-w-full sm:max-w-xl md:max-w-2xl xl:max-w-3xl bg-[#0f0f11] border border-[#2c2c30] rounded-xl p-3 sm:p-4 md:p-5">
+      <main className="min-h-screen w-full flex flex-col items-center bg-bg-surface">
+        {/* POST HEADER */}
+        <article className="w-full max-w-xl md:max-w-2xl xl:max-w-3xl px-3 sm:px-4 py-4">
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-orange-500 text-black flex items-center justify-center font-semibold shrink-0">
+              <div className="w-9 h-9 rounded-full bg-orange-500 text-black flex items-center justify-center font-semibold shrink-0">
                 {post?.userId?.name?.[0]}
               </div>
 
               <div className="min-w-0">
-                <p className="font-semibold leading-tight truncate text-white">
+                <p className="font-semibold truncate text-text-primary">
                   {post?.userId?.name}
                 </p>
-                <p className="text-sm text-gray-400 truncate">
+                <p className="text-sm text-text-secondary truncate">
                   @{post?.userId?.username}
                 </p>
               </div>
@@ -135,7 +136,7 @@ const DiscussionPage = () => {
           </div>
 
           {post?.content && (
-            <p className="text-sm sm:text-[15px] leading-relaxed mb-3 text-gray-200 whitespace-pre-wrap break-words">
+            <p className="text-sm leading-relaxed text-text-primary whitespace-pre-wrap break-words">
               {post.content}
             </p>
           )}
@@ -144,10 +145,14 @@ const DiscussionPage = () => {
             <img
               src={post.images[0].url}
               alt="post"
-              className="w-full md:max-w-96 mx-auto max-h-64 sm:max-h-64 md:max-h-80 object-cover rounded-lg mb-5"
+              className="w-full max-h-80 object-cover rounded-lg mt-3"
             />
           )}
-          <div className="relative w-full max-w-full sm:max-w-xl md:max-w-2xl xl:max-w-3xl">
+        </article>
+
+        {/* DISCUSSION */}
+        <section className="w-full max-w-xl md:max-w-2xl xl:max-w-3xl flex flex-col flex-1 relative">
+          <div className="flex-1 overflow-y-auto px-3 py-4">
             <MessageList
               messagesByPost={messagesByPost[postId] || []}
               me={me}
@@ -155,10 +160,13 @@ const DiscussionPage = () => {
               onEdit={editMessage}
               onDelete={deleteMessage}
             />
+          </div>
 
+          {/* INPUT (sticky-ish) */}
+          <div className="sticky bottom-0 border-border bg-bg-surface px-3 py-2">
             <MessageInput onSend={sendMessage} />
           </div>
-        </article>
+        </section>
       </main>
     </>
   );

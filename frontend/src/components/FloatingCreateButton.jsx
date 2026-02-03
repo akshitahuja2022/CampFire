@@ -9,7 +9,18 @@ const FloatingCreateButton = () => {
     <button
       onClick={() => setOpen(true)}
       aria-label="Create new post"
-      className="fixed right-4 bottom-8 md:right-10 md:bottom-8 z-30 w-14 h-14 rounded-full bg-orange-400 text-black flex items-center justify-center shadow-lg hover:scale-105"
+      className="
+        fixed z-40
+        right-4 bottom-20 sm:bottom-8
+        w-14 h-14
+        rounded-full
+        bg-accent hover:bg-accent-hover
+        text-black
+        flex items-center justify-center
+        shadow-xl
+        transition-all
+        hover:scale-105 active:scale-95
+      "
     >
       <FiPlus className="w-6 h-6" />
     </button>

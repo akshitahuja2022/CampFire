@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../context/authContext";
 import { handleError, handleSuccess } from "../notify/Notification";
 import { useNavigate } from "react-router-dom";
+import { FiUpload, FiTrash2 } from "react-icons/fi";
 
 const UploadAvatar = () => {
   const navigate = useNavigate();
@@ -11,14 +12,13 @@ const UploadAvatar = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!file) return handleError("Please select a file");
+    if (!file) return handleError("Please select an image");
 
     const formData = new FormData();
     formData.append("avatar", file);
 
     try {
       setLoading(true);
-      handleSuccess("Please wait a minute, uploading your avatar...");
 
       const response = await fetch(
         `${import.meta.env.VITE_BACKNED_URL}/api/v1/user/update/avatar`,
@@ -36,7 +36,7 @@ const UploadAvatar = () => {
           ...prev,
           avatar: result.data,
         }));
-        setTimeout(() => navigate("/settings/account"), 2000);
+        setTimeout(() => navigate("/settings/account"), 1500);
       } else {
         handleError(result.message);
       }
@@ -64,7 +64,7 @@ const UploadAvatar = () => {
           ...prev,
           avatar: result.data,
         }));
-        setTimeout(() => navigate("/settings/account"), 2000);
+        setTimeout(() => navigate("/settings/account"), 1500);
       } else {
         handleError(result.message);
       }
@@ -76,48 +76,38 @@ const UploadAvatar = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-[#111113] rounded-2xl shadow-lg p-6">
-        <div className="flex flex-col sm:flex-row gap-5 mb-5">
-          <div className="relative w-24 h-24 sm:w-20 sm:h-20 mx-auto sm:mx-0">
-            <img
-              src={
-                loginUser.avatar.url ? loginUser.avatar.url : "/user-avatar.png"
-              }
-              alt="user-profile"
-              className="w-full h-full object-cover rounded-full border-4 border-[#1f1f23] shadow-lg"
-            />
-          </div>
-          <div className="mt-2 mb-5">
-            <h2 className="text-xl font-semibold text-[#fafafa] text-center">
-              Upload Your Avatar
-            </h2>
-            <p className="text-sm text-[#a3a3a3] text-center mt-1">
-              Upload a clear photo to personalize your profile
-            </p>
-          </div>
+    <div className="w-full flex justify-center px-4 py-10">
+      <div className="w-full max-w-md bg-surface border border-border rounded-2xl p-6 sm:p-8">
+        <div className="text-center mb-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-text-primary">
+            Profile photo
+          </h2>
+          <p className="mt-1 text-sm text-text-secondary">
+            Upload or change your avatar
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <div className="flex flex-col items-center gap-4 mb-6">
+          <div className="relative w-28 h-28 rounded-full overflow-hidden border-2 border-border bg-bg">
+            <img
+              src={
+                file
+                  ? URL.createObjectURL(file)
+                  : loginUser?.avatar?.url || "/user-avatar.png"
+              }
+              alt="Avatar preview"
+              className="w-full h-full object-cover"
+            />
+          </div>
+
           <label
             htmlFor="uploadAvatar"
-            className="flex flex-col items-center justify-center gap-3 border-2 border-dashed border-[#1f1f23] rounded-xl p-6 cursor-pointer hover:border-orange-500 transition"
+            className="
+              cursor-pointer text-sm font-semibold
+              text-accent hover:text-accent-hover
+            "
           >
-            <div className="w-20 h-20 rounded-full bg-gray-800 flex items-center justify-center overflow-hidden">
-              {file ? (
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt="preview"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <span className="text-[#a3a3a3] text-sm">Preview</span>
-              )}
-            </div>
-
-            <p className="text-sm font-semibold text-[#a3a3a3]">
-              Click to upload image
-            </p>
+            Choose a new photo
           </label>
 
           <input
@@ -127,30 +117,42 @@ const UploadAvatar = () => {
             onChange={(e) => setFile(e.target.files[0])}
             hidden
           />
+        </div>
 
-          <div className="flex flex-col sm:flex-row sm:mx-auto gap-3 sm:gap-5 ">
-            <button
-              onClick={handleRemoveAvatar}
-              type="button"
-              disabled={loading}
-              className={`w-full sm:w-auto px-6 sm:px-8 py-2.5 bg-orange-400 text-black font-semibold rounded-lg transition  hover:bg-orange-500
-                  ${loading ? "opacity-50 cursor-not-allowed" : ""}
-                `}
-            >
-              Remove Avatar
-            </button>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button
+            type="button"
+            onClick={handleRemoveAvatar}
+            disabled={loading}
+            className="
+              flex items-center justify-center gap-2
+              px-5 py-2.5 rounded-xl
+              border border-border
+              bg-surface text-text-secondary
+              hover:text-red-400 hover:border-red-400
+              transition
+            "
+          >
+            <FiTrash2 size={16} />
+            Remove
+          </button>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full sm:w-auto px-6 sm:px-8 py-2.5 bg-orange-400 text-black font-semibold rounded-lg transition  hover:bg-orange-500
-                  ${loading ? "opacity-50 cursor-not-allowed" : ""}
-                `}
-            >
-              Upload Avatar
-            </button>
-          </div>
-        </form>
+          <button
+            type="submit"
+            disabled={loading}
+            onClick={handleSubmit}
+            className={`
+              flex-1 flex items-center justify-center gap-2
+              px-5 py-2.5 rounded-xl font-semibold
+              bg-accent hover:bg-accent-hover
+              text-black transition
+              ${loading ? "opacity-50 cursor-not-allowed" : ""}
+            `}
+          >
+            <FiUpload size={16} />
+            Save avatar
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -1,6 +1,4 @@
 import { useContext } from "react";
-import { IoEyeOutline } from "react-icons/io5";
-import { IoEyeOffOutline } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import { handleError, handleSuccess } from "../notify/Notification";
@@ -28,16 +26,14 @@ const ForgotPassword = () => {
       );
 
       const result = await response.json();
-
       if (result.success) {
         handleSuccess(result.message);
         setTimeout(() => navigate("/reset-password"), 2000);
       } else {
         handleError(result.message);
       }
-      setFormData({
-        email: "",
-      });
+
+      setFormData({ email: "" });
     } catch (error) {
       handleError(error);
     } finally {
@@ -47,65 +43,65 @@ const ForgotPassword = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md rounded-2xl border border-[#1f1f23]">
-        <div className="bg-[#111113] rounded-2xl shadow-xl p-8 sm:p-10">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl text-[#fafafa] sm:text-4xl font-bold mb-2">
-              Forgot password
-            </h1>
-            <p className="text-[#a3a3a3] text-sm sm:text-base">
-              No worries, we'll send you reset instructions.
-            </p>
+    <div className="w-full flex justify-center px-4 py-10">
+      <div className="w-full max-w-md bg-surface border border-border rounded-2xl p-6 sm:p-8">
+        <div className="text-center mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-text-primary">
+            Forgot password
+          </h1>
+          <p className="mt-1 text-sm text-text-secondary">
+            No worries, we’ll send you reset instructions.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block mb-2 text-sm font-semibold text-text-primary">
+              Email address
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder="you@example.com"
+              className="
+                w-full px-3 py-2.5 rounded-xl
+                bg-bg border border-border
+                text-text-primary text-sm
+                outline-none
+                focus:border-accent
+              "
+              required
+            />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <div className="mb-3">
-              <label
-                htmlFor="email"
-                className="block text-sm font-semibold text-[#fafafa] mb-2"
-              >
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                placeholder="Enter your email"
-                className="w-full px-4 py-2 rounded-lg transition-all duration-200  placeholder-gray-400 bg-[#18181b] text-white border border-[#1f1f23] outline-none"
-                aria-label="Email Address"
-              />
-            </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className={`
+              w-full py-2.5 rounded-xl font-semibold
+              bg-accent hover:bg-accent-hover
+              text-black transition
+              ${loading ? "opacity-50 cursor-not-allowed" : ""}
+            `}
+          >
+            Reset password
+          </button>
+        </form>
 
-            <button
-              disabled={loading}
-              type="submit"
-              className={`w-full bg-orange-400 hover:bg-orange-300 text-black font-bold py-3 px-4 rounded-lg shadow-lg ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-            >
-              Reset password
-            </button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-[#a3a3a3] text-sm sm:text-md font-bold">
-              Remember your password?
-              <Link
-                to="/signup"
-                className="text-white font-bold transition-colors duration-200 rounded px-1"
-              >
-                Back to login
-              </Link>
-            </p>
-          </div>
+        <div className="mt-6 text-center text-sm text-text-secondary">
+          Remember your password?
+          <Link
+            to="/login"
+            className="ml-1 font-semibold text-text-primary hover:underline"
+          >
+            Back to login
+          </Link>
         </div>
       </div>
     </div>
