@@ -10,13 +10,13 @@ const WorkSpace = () => {
       className={`
         flex-1 w-full
         h-[calc(100vh-49px)]
-        p-2 mt-5
+        p-2
         overflow-y-auto scrollbar-hide
         text-white
         ${
           isDiscussionPage
-            ? "pb-0"
-            : "pb-[calc(72px+env(safe-area-inset-bottom))] md:pb-0"
+            ? "pb-20"
+            : "mt-5 pb-[calc(72px+env(safe-area-inset-bottom))] md:pb-20"
         }
       `}
     >

@@ -44,13 +44,7 @@ const MessageList = ({
   }
 
   return (
-    <div
-      ref={containerRef}
-      className="
-        flex flex-1 flex-col overflow-y-auto
-        px-3 py-4 sm:px-4
-      "
-    >
+    <div ref={containerRef} className="flex flex-col px-3 py-4 sm:px-4">
       {messagesByPost.length === 0 ? (
         <div className="flex flex-1 items-center justify-center">
           <p className="text-sm text-text-muted">

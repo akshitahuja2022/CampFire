@@ -18,7 +18,7 @@ const Sidebar = () => {
   return (
     <>
       {/* DESKTOP SIDEBAR */}
-      <aside className="hidden md:flex md:w-16 lg:w-48 xl:w-60 h-[calc(100vh-56px)] flex-col bg-bg border-r border-border">
+      <aside className="hidden md:flex md:w-16 lg:w-48 xl:w-60 h-[calc(100vh-49px)] flex-col bg-bg border-r border-border">
         <nav className="flex flex-1 flex-col gap-1 px-2 py-4 text-text-muted">
           <Link
             to="/"

@@ -115,7 +115,7 @@ const DiscussionPage = () => {
 
   return (
     <>
-      <main className="min-h-screen w-full flex flex-col items-center bg-bg-surface">
+      <main className="w-full flex flex-col items-center bg-bg-surface">
         {/* POST HEADER */}
         <article className="w-full max-w-xl md:max-w-2xl xl:max-w-3xl px-3 sm:px-4 py-4">
           <div className="flex items-start justify-between gap-3 mb-3">
@@ -151,8 +151,8 @@ const DiscussionPage = () => {
         </article>
 
         {/* DISCUSSION */}
-        <section className="w-full max-w-xl md:max-w-2xl xl:max-w-3xl flex flex-col flex-1 relative">
-          <div className="flex-1 overflow-y-auto px-3 py-4">
+        <section className="w-full max-w-xl md:max-w-2xl xl:max-w-3xl flex flex-col relative">
+          <div className="px-3 py-4">
             <MessageList
               messagesByPost={messagesByPost[postId] || []}
               me={me}
@@ -162,7 +162,7 @@ const DiscussionPage = () => {
             />
           </div>
 
-          {/* INPUT (sticky-ish) */}
+  
           <div className="sticky bottom-0 border-border bg-bg-surface px-3 py-2">
             <MessageInput onSend={sendMessage} />
           </div>
