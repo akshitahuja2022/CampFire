@@ -1,14 +1,14 @@
 :root[data-theme="default"] {
-  --bg: 14 12 10; /* deep charcoal */
-  --surface: 26 22 18; /* warm ash */
-  --border: 44 38 32;
+  --bg: 15 15 15;
+  --surface: 24 24 27;
+  --border: 45 45 50;
 
-  --text-primary: 248 244 240;
-  --text-secondary: 185 174 160;
-  --text-muted: 140 128 114;
+  --text-primary: 244 244 245;
+  --text-secondary: 181 181 186;
+  --text-muted: 125 125 130;
 
-  --accent: 251 146 60; /* ember orange */
-  --accent-hover: 253 186 116;
+  --accent: 34 197 94;
+  --accent-hover: 74 222 128;
 }
 
 :root[data-theme="pine-smoke"] {
