@@ -24,7 +24,7 @@ const register = asyncWrapper(async (req, res) => {
   if (!code) throw new ApiError("Failed to send email", 401);
   res.cookie("token", code, {
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: "none",
     maxAge: 10 * 60 * 1000,
   });
   sendResponse(res, 200, "Otp sent");
@@ -65,7 +65,7 @@ const verifyCode = asyncWrapper(async (req, res) => {
   const token = genrateToken(user._id);
   res.clearCookie("token").cookie("uid", token, {
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: "none",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
@@ -94,7 +94,7 @@ const resendCode = asyncWrapper(async (req, res) => {
 
   res.cookie("token", newToken, {
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: "none",
     maxAge: 10 * 60 * 1000,
   });
 
@@ -120,7 +120,7 @@ const login = asyncWrapper(async (req, res) => {
     if (!code) throw new ApiError("Failed to send email", 401);
     res.cookie("token", code, {
       httpOnly: true,
-      sameSite: "strict",
+      sameSite: "none",
       maxAge: 10 * 60 * 1000,
     });
     throw new ApiError("Account not verified", 403);
@@ -130,7 +130,7 @@ const login = asyncWrapper(async (req, res) => {
 
   res.cookie("uid", token, {
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: "none",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
@@ -157,7 +157,7 @@ const forgotPassword = asyncWrapper(async (req, res) => {
 
   res.cookie("token", newToken, {
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: "none",
     maxAge: 10 * 60 * 1000,
   });
 
