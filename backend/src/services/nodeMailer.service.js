@@ -5,7 +5,7 @@ const resend = new Resend(config.RESEND_API_KEY);
 
 const sendMail = async (to, code) => {
   const response = await resend.emails.send({
-    from: "Campfire <auth@send.campfireapp.in>",
+    from: "Campfire <auth@campfireapp.in>",
     to,
     subject: "Your Campfire verification code",
     text: `Your Campfire verification code is ${code}. This code expires in 10 minutes.`,
