@@ -1,17 +1,11 @@
 import config from "../configs/env.config.js";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: config.SMTP_USER,
-    pass: config.SMTP_PASS,
-  },
-});
+const resend = new Resend(config.RESEND_API_KEY);
 
 const sendMail = async (to, code) => {
-  await transporter.sendMail({
-    from: '"Campfire" <${config.SMTP_USER}>',
+  const response = await resend.emails.send({
+    from: "Campfire <onboarding@resend.dev>",
     to,
     subject: "Your Campfire verification code",
     text: `Your Campfire verification code is ${code}. This code expires in 10 minutes.`,
@@ -59,6 +53,8 @@ const sendMail = async (to, code) => {
       </div>
     `,
   });
+
+  return response.id;
 };
 
 export default sendMail;

@@ -16,6 +16,7 @@ const config = {
   jwt_secret: process.env.JWT_SECRET,
   SMTP_USER: process.env.SMTP_USER,
   SMTP_PASS: process.env.SMTP_PASS,
+  RESEND_API_KEY: process.env.RESEND_API_KEY,
   FRONTEND_URL: process.env.FRONTEND_URL,
   CLOUDINARY: {
     name: process.env.CLOUDINARY_CLOUD_NAME,
