@@ -6,6 +6,9 @@ The system is designed to support focused conversations by limiting the lifespan
 
 Camps are intentionally temporary, enabling automatic cleanup, reduced long-term noise, and more meaningful interactions.
 
+
+🌐 Live Demo: https://campfire-1.onrender.com
+
 ## Overview
 
 CampFire allows users to create or join camps, publish posts within those camps, and participate in real-time discussions. Each camp has a defined lifecycle, after which it expires automatically.
